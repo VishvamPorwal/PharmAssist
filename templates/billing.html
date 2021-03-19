@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sign up</title>
+</head>
+<body>
+    
+    {% if is_named_in == False %}
+        <form action="/billing" method="POST">
+            <label for="name"><b>Name</b></label>
+            <input type="text" placeholder="Enter Name" name="name" required>
+            <input type ="submit" value="add_name">
+        </form>
+    {% endif %}
+
+    {% if is_named_in == True %}
+    <h4>{{customer_name}}</h4>
+<TABLE id="dataTable" width="350px" border="1">
+    <th>Name of medicine</th>
+    <th>Number of tablets</th>
+    <th>total</th>
+    {% for med, info in med_list.items() %}
+    <TR>
+      <TD> {{med}} </TD>
+      {% for i in info %}
+        <TD> {{i}} </TD>
+      {% endfor %}
+    </TR>
+    {% endfor %}
+  </TABLE>
+  <br><br>
+        <form action="/billing" method="POST">
+            <label for="name"><b>Name</b></label>
+            <input list="inventories" name="med_name" id="inventory" autocomplete="off">
+            <datalist id="inventories">
+                {% for i in inventory_list %}
+                    <option value ="{{i}}">
+                {% endfor %}
+              </datalist>
+            <input type="number" placeholder="Enter tabs " name="no_tabs">
+            <input type ="submit" name="action" value="add">
+            <input type ="submit" name="action" value="clear">
+            <input type ="submit" name="action" value="done">
+        </form>
+    {% endif %}
+</body>
+</html>
+{% endblock %}

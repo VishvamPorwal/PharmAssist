@@ -1,0 +1,42 @@
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for msg in messages %}
+<div class="alert alert-warning" role="alert">
+    {{msg}}
+</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>PharmaAssist</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body style="height:1500px">
+
+<nav class="navbar navbar-inverse ">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">PharmaAssist</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="#">Home</a></li>
+      <li><a href="/billing">Billing</a></li>
+      <li><a href="/add_medicine">Add Item</a></li>
+      <li><a href="/inventory">Inventory</a></li>
+      <li><a href="/records">Records</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="/logout"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+    </ul>
+  </div>
+</nav>
+</body>
+{% block body %}
+{% endblock %}
+</html>

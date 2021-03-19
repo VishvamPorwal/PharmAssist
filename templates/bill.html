@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bill</title>
+</head>
+<body>
+    <h1>Final bill</h1>
+    <h3>Name of customer : {{customer_name}}</h3>
+    <TABLE id="dataTable" width="350px" border="1">
+		<th>Name of medicine</th>
+		<th>Number of tablets</th>
+		<th>total</th>
+		{% for med, info in med_list.items() %}
+		<TR>
+			<TD> {{med}} </TD>
+			{% for i in info %}
+				<TD> {{i}} </TD>
+			{% endfor %}
+		</TR>
+		{% endfor %}
+        <tr>
+            <td colspan="3"><b>Grand Total ={{total_bill}}</b> </td>
+        </tr>
+	</TABLE>
+</body>
+</html>
+{% endblock %}

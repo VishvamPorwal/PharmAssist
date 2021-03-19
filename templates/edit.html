@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <TABLE id="dataTable" border="2" align="center">
+        <th style="text-align: center;">Name of medicine</th>
+        <th style="text-align: center;">Number of tablets/stock</th>
+        <th style="text-align: center;">Buying price</th>
+        <th style="text-align: center;">Selling price</th>
+        <th style="text-align: center;">Symptoms</th>
+        <th style="text-align: center;">Date of entry</th>
+        <th style="text-align: center;">Expiry date</th>
+        <th style="text-align: center;">Total sold</th>
+            <tr style="text-align: center;">
+                <td>{{query_for_med.med_name}}</td>
+                <td>{{query_for_med.stock}}</td>
+                <td>{{query_for_med.rate_per_tab_bought}}</td>
+                <td>{{query_for_med.rate_per_tab_sell}}</td>
+                <td>{{query_for_med.symptoms}}</td>
+                <td>{{query_for_med.entry_date}}</td>
+                <td>{{query_for_med.expiry_date}}</td>
+                <td>{{query_for_med.sold}}</td>
+            </tr>   
+      </TABLE>
+      <form action="/edited" method="POST">
+        <br>
+        <label for="med_name">Enter name of medicine : </label><br>
+        <input type="text" name="med_name"> <br>
+        <label for="stock">Number of tablets/items : </label><br>
+        <input type="number" name="stock"><br>
+        <label for="rate_per_tab_sell">Selling price (per tablet/item) : </label><br>
+        <input type="number" step="any" min="0" name="rate_per_tab_sell"><br>
+        <label for="symptoms">Symptoms : </label><br>
+        <input type="text" name="symptoms"><br>
+        <label for="expiry_date">Expiry date : </label><br>
+        <input type="date" name="expiry_date"><br><br>
+        <input type="hidden" name="{{query_for_med.id}}" value="{{query_for_med.id}}" style="visibility: hidden; width: 0%;">
+        <input type="submit" name="add" value="Save Changes">
+      </form>
+</body>
+
+{% endblock %}

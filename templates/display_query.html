@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <TABLE id="dataTable" border="2" align="center">
+        <th style="text-align: center;">Name of medicine</th>
+        <th style="text-align: center;">Number of tablets/stock</th>
+        <th style="text-align: center;">Buying price</th>
+        <th style="text-align: center;">Selling price</th>
+        <th style="text-align: center;">Symptoms</th>
+        <th style="text-align: center;">Date of entry</th>
+        <th style="text-align: center;">Expiry date</th>
+        <th style="text-align: center;">Total sold</th>
+            {% for i in query_for_med %}
+            <tr style="text-align: center;">
+                <td>{{i.med_name}}</td>
+                <td>{{i.stock}}</td>
+                <td>{{i.rate_per_tab_bought}}</td>
+                <td>{{i.rate_per_tab_sell}}</td>
+                <td>{{i.symptoms}}</td>
+                <td>{{i.entry_date}}</td>
+                <td>{{i.expiry_date}}</td>
+                <td>{{i.sold}}</td>
+            </tr>
+            {% endfor %}    
+      </TABLE>
+</body>
+</html>
+{% endblock %}
