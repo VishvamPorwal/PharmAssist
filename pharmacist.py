@@ -19,7 +19,17 @@ babul ek baar kr liya :D
 
 
 
+	var actual_sales_dps = [
+		{% for i in range(0,12) %}
+			{ x : ( {{i}} ), y : {{sales_p_m[i]}} },
+		{% endfor %}
+	];
 
+	var profit_dps = [
+		{% for i in range(0,12) %}
+			{ x : ( {{i}} ), y : {{prof_p_m[i]}} },
+		{% endfor %}
+	];
 
 
 

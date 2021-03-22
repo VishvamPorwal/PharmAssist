@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
 import datetime
 
+
 # from admin.admin import admin
 # from admin_credentials import admin_email, admin_password
 
@@ -49,6 +50,7 @@ class Pharmacists(db.Model):
 	phone_number = db.Column(db.String(12))
 	inventory = db.relationship('Inventory', backref='owner')
 	sales = db.relationship('Sales', backref='salesman')
+	pharmacist_b_s = db.relationship('Pharmacist_B_S', backref='salesman')
 
 
 ##medicines inventory table
@@ -73,6 +75,7 @@ class Sales(db.Model):
 	no_of_tabs = db.Column(db.Integer)
 	sale_price = db.Column(db.Float)
 	selling_date = db.Column(db.DateTime)
+	profit = db.Column(db.Float)
 	buyer_id = db.Column(db.Integer, db.ForeignKey('customer.id'))
 	salesman_id = db.Column(db.Integer, db.ForeignKey('pharmacists.id'))
 
@@ -81,6 +84,14 @@ class Customer(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(100))
 	order = db.relationship('Sales', backref='buyer')
+
+
+#total bought and sold
+class Pharmacist_B_S(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	salesman_id = db.Column(db.Integer, db.ForeignKey('pharmacists.id'))
+	total_bought = db.Column(db.Float)
+	total_sold = db.Column(db.Float)
 	
 
 #adding data in tables
@@ -99,10 +110,13 @@ def add_pharmacist(name, email, pwd, address, phone_number):
 		pharmacist = Pharmacists(name = name, email = email, pwd = pwd, address = address, phone_number = phone_number)
 		db.session.add(pharmacist)
 		db.session.commit()
+		pharmacist_bs = Pharmacist_B_S(salesman_id = pharmacist.id, total_sold = 0.0, total_bought = 0.0)
+		db.session.add(pharmacist_bs)
+		db.session.commit()
 		session["id"] = pharmacist.id
-		message = Message("You are registered in PharmaAssist!!", sender = 'edukid2021@gmail.com', recipients = [email])
-		message.body = f"Hello,{name}. We from PharmaAssist welcome you to our family. : )"
-		mail.send(message)
+		# message = Message("You are registered in PharmaAssist!!", sender = 'edukid2021@gmail.com', recipients = [email])
+		# message.body = f"Hello,{name}. We from PharmaAssist welcome you to our family. : )"
+		# mail.send(message)
 		return 1
 
 ##inventory
@@ -119,6 +133,10 @@ def add_med(med_name, expiry_date, stock, symptoms, rate_per_tab_bought, rate_pe
 	inventory = Inventory(owner_id = session['id'], med_name = med_name, entry_date = today.date(), expiry_date = expiry_date, stock = stock, symptoms = symptoms, rate_per_tab_bought = rate_per_tab_bought, rate_per_tab_sell = rate_per_tab_sell, sold = None)
 	db.session.add(inventory)
 	db.session.commit()
+	pharmacist_bs = Pharmacist_B_S.query.filter_by(salesman_id = session['id']).first()
+	pharmacist_bs.total_bought += (inventory.rate_per_tab_bought * inventory.stock) 
+	db.session.commit()
+
 
 ##customer
 def add_customer(name):
@@ -130,17 +148,12 @@ def add_customer(name):
 
 
 ##sales record
-def add_sale_record(med_name, no_of_tabs, sale_price, some_customer, some_pharamacist):
+def add_sale_record(med_name, no_of_tabs, sale_price, profit, some_customer, some_pharamacist):
 	today = datetime.datetime.now()
 	
-	sale = Sales(med_name = med_name, no_of_tabs = no_of_tabs, sale_price = sale_price, selling_date = today, buyer = some_customer, salesman = some_pharamacist )
+	sale = Sales(med_name = med_name, no_of_tabs = no_of_tabs, sale_price = sale_price, selling_date = today, profit = profit, buyer = some_customer, salesman = some_pharamacist)
 	db.session.add(sale)
 	db.session.commit()
-
-
-
-
-
 
 
 
@@ -155,14 +168,18 @@ def calc_bill(med_list):
 
 ##to add sales records of a customer
 def customer_entry(med_list, customer_name):
-	add_customer(customer_name)
-	some_customer = Customer.query.filter_by(name = customer_name).first()
+	# add_customer(customer_name)
+	customer_name = customer_name.capitalize()
+	customer = Customer(name = customer_name)
+	db.session.add(customer)
+	db.session.commit()
 	some_pharamacist = Pharmacists.query.filter_by(email = session['email']).first()
 	for med, info in med_list.items():
-		add_sale_record(med, info[0], info[1], some_customer, some_pharamacist)
+		add_sale_record(med, info[0], info[1], info[2], customer, some_pharamacist)
 
 
 ##to modify the stock after bill ##to check
+#med list = [sell_tabs, ]
 def modify_stock(inventory, med_list):
 	for med, info in med_list.items():
 		for inven in inventory:
@@ -171,6 +188,9 @@ def modify_stock(inventory, med_list):
 				if(inven.sold == None):
 					inven.sold = 0
 				inven.sold += info[1]
+				pharmacist_bs = Pharmacist_B_S.query.filter_by(salesman_id = session['id']).first()
+				pharmacist_bs.total_sold += info[1]
+				db.session.commit()
 				break
 	return inventory
 
@@ -181,6 +201,84 @@ def unique_meds(inventory_list):
         s.add(i.med_name)
     return s
 
+##
+# def calc_b_e():
+def calc_start(y, m):
+	return datetime.datetime(y, m, 1)
+
+
+def calc_end(y, m):
+	if m==2:
+		if (y % 4) == 0:
+			if (y % 100) == 0:
+				if (y % 400) == 0:
+				   return datetime.datetime(y,m,29)
+				else:
+				   return datetime.datetime(y,m,28)
+			else:
+				return datetime.datetime(y,m,29)
+		else:
+			return datetime.datetime(y,m,28)
+	else:
+		if m<=7:
+			if m%2==0:
+				return datetime.datetime(y,m,30)
+			else:
+				return datetime.datetime(y,m,31)
+		else:
+			if m%2==0:
+				return datetime.datetime(y,m,31)
+			else:
+				return datetime.datetime(y,m,30)
+
+
+
+
+
+
+##total profit between begin and end
+def total_profit_bw_b_e(begin = "2021-03-01", end = "2021-03-31"):
+	return db.session.query(db.func.sum(Sales.profit)).filter(Sales.selling_date > begin, Sales.selling_date < end).scalar()
+
+
+def total_sales_bw_b_e(begin = "2021-03-01", end = "2021-03-31"):
+	return db.session.query(db.func.sum(Sales.sale_price)).filter(Sales.selling_date > begin, Sales.selling_date < end).scalar()
+
+
+
+def calc_profit(y):
+	profit_yearly = list()
+	for i in range(1, 13):
+		beg = calc_start(y, i)
+		e = calc_end(y, i)
+		temp = total_profit_bw_b_e(beg, e)
+		if temp is None:
+			temp = 0
+		profit_yearly.append(temp)
+	return profit_yearly
+
+
+def calc_sales(y):
+	sales_yearly = list()
+	for i in range(1, 13):
+		beg = calc_start(y, i)
+		e = calc_end(y, i)
+		temp = total_sales_bw_b_e(beg, e)
+		if temp is None:
+			temp = 0
+		sales_yearly.append(temp)
+	return sales_yearly
+
+
+
+def get_b():
+	pharmacist_bs = Pharmacist_B_S.query.filter_by(salesman_id = session['id']).first()
+	return pharmacist_bs.total_bought
+
+
+def get_s():
+	pharmacist_bs = Pharmacist_B_S.query.filter_by(salesman_id = session['id']).first()
+	return pharmacist_bs.total_sold
 
 
 #routes
@@ -302,9 +400,11 @@ def billing():
 					else:
 						flash("added in bill")
 						tot_price = Stock.rate_per_tab_sell * no_tabs
+						profit = (Stock.rate_per_tab_sell - Stock.rate_per_tab_bought) * no_tabs
 						values = []
 						values.append(no_tabs)
 						values.append(tot_price)
+						values.append(profit)
 						med_list[med_name] = values
 						return redirect(url_for("billing"))
 						# return render_template("billing.html", is_named_in = True, med_list = med_list, customer_name = session["customer_name"], inventory_list = inventory_list)
@@ -320,6 +420,7 @@ def billing():
 			else:
 				customer_name = session["customer_name"]
 				total_bill = calc_bill(med_list)
+				# inventory_for_pr = Inventory.query.filter_by(owner_id = session['id'])
 				customer_entry(med_list, customer_name)
 				inventory = Inventory.query.filter_by(owner_id = session['id'])
 				inventory = modify_stock(inventory, med_list)
@@ -380,17 +481,17 @@ def edited():
 	in_id = in_id[-2]
 	in_id = int(in_id)
 	med_to_modify = Inventory.query.filter_by(id = in_id).first()
-	if (request.form.get("med_name")) is not "":
+	if (request.form.get("med_name")) != "":
 		med_to_modify.med_name = (request.form.get("med_name"))
-	if request.form.get("expiry_date") is not "":
+	if request.form.get("expiry_date") != "":
 		expiry_date = request.form.get("expiry_date")
 		expiry_date = datetime.datetime.strptime(expiry_date, '%Y-%m-%d')
 		med_to_modify.expiry_date = expiry_date
-	if request.form.get("stock") is not "":
+	if request.form.get("stock") != "":
 		med_to_modify.stock = request.form.get("stock")
-	if request.form.get("symptoms") is not "":
+	if request.form.get("symptoms") != "":
 		med_to_modify.symptoms = request.form.get("symptoms")
-	if request.form.get("rate_per_tab_sell") is not "":
+	if request.form.get("rate_per_tab_sell") != "":
 		med_to_modify.rate_per_tab_sell = request.form.get("rate_per_tab_sell")
 	db.session.commit()
 	return redirect(url_for("inventory"))
@@ -398,8 +499,25 @@ def edited():
 
 
 
-# @app.route("/records")
-# def records():
+@app.route("/dashboard", methods = ['GET', 'POST'])
+def dashboard():
+	# option_years = []
+	# if request.method == "POST":
+	# 	year = request.form.get("year")
+	# 	sales_p_m = calc_sales(year)
+	# 	prof_p_m = calc_profit(year)
+	# 	# print(sales_p_m)
+	# 	return render_template("dashboard.html", year = year, prof_p_m = prof_p_m, sales_p_m = sales_p_m,)
+	year = datetime.datetime.now().year
+	# for tmp in range(2021, year+1):
+	# 	option_years.append(tmp)
+	prof_p_m = calc_profit(year)
+	sales_p_m = calc_sales(year)
+	total_bought = get_b()
+	total_sold = get_s()
+	# sales_p_m = [3,4,5,6,7,8,9,5,3,1,5,3]
+	# print(sales_p_m)
+	return render_template("dashboard.html", year = year, prof_p_m = prof_p_m, sales_p_m = sales_p_m, total_sold = total_sold, total_bought = total_bought)
 
 
 
@@ -414,5 +532,6 @@ def logout():
 
 #driver code
 if __name__== "__main__":
+	# print(calc_sales(2021))
 	db.create_all()
 	app.run(debug=True)
