@@ -18,9 +18,10 @@
 		{% for med, info in med_list.items() %}
 		<TR>
 			<TD> {{med}} </TD>
-			{% for i in info %}
-				<TD> {{i}} </TD>
-			{% endfor %}
+			
+				<TD> {{info[0]}} </TD>
+				<TD> {{info[1]}} </TD>
+			
 		</TR>
 		{% endfor %}
         <tr>

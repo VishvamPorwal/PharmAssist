@@ -138,6 +138,15 @@ function toggleDataSeries(e) {
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 	<center><div id="chartContainer2" style="height: 300px; width: 80%;"></div>
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script></center>
+<center>
+  <form action="/dashboard" method="POST">select year :
+    <select name="year">
+      {% for i in option_years %}
+        <option value="{{i}}">{{i}}</option>  
+      {% endfor %}
+    </select>
+  </form>
+</center>
 
 </body>
 </html>

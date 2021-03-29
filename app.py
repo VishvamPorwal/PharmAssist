@@ -3,6 +3,10 @@ from flask import Flask, render_template, redirect, request, url_for, session, f
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
 import datetime
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+
+
 
 
 # from admin.admin import admin
@@ -35,13 +39,18 @@ app.config["MAIL_USERNAME"] = ""
 mail = Mail(app)
 
 
+#flask login config
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+login_manager.login_message = 'You need to log in'
 
 
 
 #Database Structure
 
 ##pharmacists name table
-class Pharmacists(db.Model):
+class Pharmacists(UserMixin, db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(100))
 	email = db.Column(db.String(100))
@@ -51,6 +60,10 @@ class Pharmacists(db.Model):
 	inventory = db.relationship('Inventory', backref='owner')
 	sales = db.relationship('Sales', backref='salesman')
 	pharmacist_b_s = db.relationship('Pharmacist_B_S', backref='salesman')
+
+@login_manager.user_loader
+def load_user(user_id):
+    return Pharmacists.query.get(int(user_id))
 
 
 ##medicines inventory table
@@ -202,7 +215,6 @@ def unique_meds(inventory_list):
     return s
 
 ##
-# def calc_b_e():
 def calc_start(y, m):
 	return datetime.datetime(y, m, 1)
 
@@ -238,11 +250,11 @@ def calc_end(y, m):
 
 ##total profit between begin and end
 def total_profit_bw_b_e(begin = "2021-03-01", end = "2021-03-31"):
-	return db.session.query(db.func.sum(Sales.profit)).filter(Sales.selling_date > begin, Sales.selling_date < end).scalar()
+	return db.session.query(db.func.sum(Sales.profit)).filter(Sales.selling_date > begin, Sales.selling_date < end, Sales.salesman_id == session['id']).scalar()
 
 
 def total_sales_bw_b_e(begin = "2021-03-01", end = "2021-03-31"):
-	return db.session.query(db.func.sum(Sales.sale_price)).filter(Sales.selling_date > begin, Sales.selling_date < end).scalar()
+	return db.session.query(db.func.sum(Sales.sale_price)).filter(Sales.selling_date > begin, Sales.selling_date < end, Sales.salesman_id == session['id']).scalar()
 
 
 
@@ -285,6 +297,7 @@ def get_s():
 
 ##index
 @app.route("/")
+@login_required
 def index():
 	return redirect(url_for("home"))
 
@@ -292,6 +305,7 @@ def index():
 
 ##home
 @app.route("/home")
+@login_required
 def home():
 	return render_template("login.html")
 
@@ -310,12 +324,12 @@ def signup():
 		if pwd != pwd_rep:                      #if passwords dont match
 		    flash("Passwords dont match")
 		    return redirect("signup")
+		pwd = generate_password_hash(pwd, method='sha256')
 		if not (add_pharmacist(name, email, pwd, address, phone_number)):
 			flash("Email already taken")
 			return redirect(url_for("signup"))
 		flash("Signup successful!")
-		session['email'] = email
-		return redirect(url_for("add_medicine"))
+		return redirect(url_for("login"))
 	else:
 		return render_template("login.html")
 
@@ -332,13 +346,20 @@ def login():
 		# 		return redirect(url_for("admin.records"))
 		try:
 			pharmacist = Pharmacists.query.filter_by(email = email).first()
-			if pharmacist.pwd != psw:
+
+			if (not (check_password_hash(pharmacist.pwd, psw))):
 				flash("Wrong Password!!")
 				return redirect(url_for('login'))
 			else:
 				flash("Logged in successfully!")
+				login_user(pharmacist)
 				session['email'] = email
 				session['id'] = pharmacist.id
+				if 'next' in session:
+					next = session['next']
+					return redirect(next)
+
+
 				return redirect(url_for('add_medicine'))
 		except:
 			flash("You have not registered yet!")
@@ -351,6 +372,7 @@ def login():
 #add med
 
 @app.route("/add_medicine", methods = ['GET', 'POST'])
+@login_required
 def add_medicine():
 	if request.method == "POST":
 		#med_name, expiry_date, stock, symptoms, rate_per_tab_bought, rate_per_tab_sell
@@ -372,6 +394,7 @@ def add_medicine():
 med_list = dict()
 
 @app.route("/billing", methods = ['GET', 'POST'])
+@login_required
 def billing():
 	# inventory_list = Inventory.query.filter(Inventory.ph_id==session["ph_id"]).all()
 	# print(inventory_list[1].med_name)
@@ -438,6 +461,7 @@ def billing():
 
 ##inventory
 @app.route("/inventory", methods=['POST', 'GET'])
+@login_required
 def inventory():
 	# pharmacist = Pharmacists.query.filter_by(email = session['email']).first()
 	inventory_list = Inventory.query.filter_by(owner_id = session['id']).all()
@@ -455,7 +479,27 @@ def inventory():
 
 ##delete/jump to edit - inventory
 @app.route("/edit", methods = ['POST'])
+@login_required
 def edit():
+	inventory_list = Inventory.query.filter_by(owner_id = session['id']).all()
+	in_id = list(request.form.to_dict().keys())
+	in_id = in_id[0]
+	in_id = int(in_id)
+	
+	for item in inventory_list:
+		if item.id == in_id:
+			if request.form[str(in_id)] == "delete":
+				return render_template("confirm_del.html", in_id = str(in_id))
+				# flash(f"{request.form.to_dict().keys()}")
+				# return redirect(url_for("inventory"))
+
+			else:
+				return render_template("edit.html", query_for_med = item)
+	
+
+#are you sure to delete
+@app.route("/are_you_sure", methods = ['POST'])
+def are_you_sure():
 	inventory_list = Inventory.query.filter_by(owner_id = session['id']).all()
 	in_id = list(request.form.to_dict().keys())
 	in_id = in_id[0]
@@ -467,15 +511,16 @@ def edit():
 				db.session.commit()
 				# flash(f"{request.form.to_dict().keys()}")
 				return redirect(url_for("inventory"))
-
 			else:
-				return render_template("edit.html", query_for_med = item)
-	
+				return redirect(url_for("inventory"))
+
+
 
 
 
 ##edit
 @app.route("/edited", methods = ['POST'])
+@login_required
 def edited():
 	in_id = list(request.form.to_dict().keys())
 	in_id = in_id[-2]
@@ -500,31 +545,38 @@ def edited():
 
 
 @app.route("/dashboard", methods = ['GET', 'POST'])
+@login_required
 def dashboard():
-	# option_years = []
-	# if request.method == "POST":
-	# 	year = request.form.get("year")
-	# 	sales_p_m = calc_sales(year)
-	# 	prof_p_m = calc_profit(year)
-	# 	# print(sales_p_m)
-	# 	return render_template("dashboard.html", year = year, prof_p_m = prof_p_m, sales_p_m = sales_p_m,)
-	year = datetime.datetime.now().year
-	# for tmp in range(2021, year+1):
-	# 	option_years.append(tmp)
-	prof_p_m = calc_profit(year)
-	sales_p_m = calc_sales(year)
+	option_years = []
 	total_bought = get_b()
 	total_sold = get_s()
+	year = datetime.datetime.now().year
+	for tmp in range(2021, year+1):
+		option_years.append(tmp)
+	if request.method == "POST":
+		year = request.form.get("year")
+		year = int(year)
+		prof_p_m = calc_profit(year)
+		sales_p_m = calc_sales(year)
+		# print(sales_p_m)
+		return render_template("dashboard.html", year = year, prof_p_m = prof_p_m, sales_p_m = sales_p_m, total_sold = total_sold, total_bought = total_bought, option_years = option_years)
+		
+	
+	prof_p_m = calc_profit(year)
+	sales_p_m = calc_sales(year)
+
 	# sales_p_m = [3,4,5,6,7,8,9,5,3,1,5,3]
 	# print(sales_p_m)
-	return render_template("dashboard.html", year = year, prof_p_m = prof_p_m, sales_p_m = sales_p_m, total_sold = total_sold, total_bought = total_bought)
+	return render_template("dashboard.html", year = year, prof_p_m = prof_p_m, sales_p_m = sales_p_m, total_sold = total_sold, total_bought = total_bought, option_years = option_years)
 
 
 
 
 ##logout
 @app.route('/logout')
+@login_required
 def logout():
+	logout_user()
 	session.pop("email", None)
 	session.pop("id", None)
 	return redirect(url_for('signup'))
