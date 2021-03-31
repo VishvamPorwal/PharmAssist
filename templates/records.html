@@ -6,7 +6,6 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventory</title>
     <style type="text/css">
 body
 {
@@ -165,53 +164,91 @@ h6, .h6
 <body>
    <center>
       <div id="wb_Text1" style="left:581px;top:25px;width:322px;height:60px;z-index:1;">
-         <span style="color:#FFFFFF;font-family:Impact;font-size:48px;"><u>Inventory</u></span></div>
+         <span style="color:#FFFFFF;font-family:Impact;font-size:48px;"><u>Sales Record</u></span></div>
    </center>
    <br><br><br><br>
-    <form action="/inventory" method="POST" style="text-align: center;">
-        <input list="browsers" name="med_name" id="browser" autocomplete="off" placeholder="search by med Name">
-            <datalist id="browsers">
-                {% for i in inventory_list %}
-                    <option value ="{{i.med_name}}">
-                {% endfor %}
-              </datalist> 
+    <form action="/records" method="POST" style="text-align: center;">
+        <input type="text" minlength="10" placeholder="enter phone no." name="phone_number">
         <input type="submit" id="Button1" name="search" value="Search">
     </form>
     <center><h3 style="color: white;">OR</h3></center>
-    <form action="/symptom_search" method="POST" style="text-align: center;">
-         <input type="text" name="symptom" placeholder="search by symptom">
-         <input type="submit" id="Button1" name="search_sympt" value="Search">
+    <form action="/records" method="POST" style="text-align: center;">
+         <input type="date" name="date">
+         <input type="submit" id="Button1" name="search" value="Search">
    </form>
-
-    <br><br>
-    
-    <form action="/edit" method="POST" style="text-align: center;">
-        
-        <TABLE id="dataTable" border="2" align="center" style="background-color: darkseagreen;">
-            <th style="text-align: center;">Name of medicine</th>
-            <th style="text-align: center;">Number of tablets/stock</th>
-            <th style="text-align: center;">Buying price</th>
-            <th style="text-align: center;">Selling price</th>
-            <th style="text-align: center;">Symptoms</th>
-            <th style="text-align: center;">Date of entry</th>
-            <th style="text-align: center;">Expiry date</th>
-            <th style="text-align: center;">Total sold</th>
-            <th style="text-align: center;">Action</th>
-                {% for i in inventory_list %}
+   <br>
+        {% if phone_number != 0 and date == 0 %}
+            <table id="dataTable" border="2" align="center" style="background-color: darkseagreen;">
+                <th style="text-align: center;">Customer Name</th>
+                <th style="text-align: center;">Phone no.</th>
+                <th style="text-align: center;">Name of medicine</th>
+                <th style="text-align: center;">Number of tablets</th>
+                <th style="text-align: center;">Selling price</th>
+                <th style="text-align: center;">Profit</th>
+                <th style="text-align: center;">Selling date</th>
+                {% for i in sales_recs %}
+                {% if phone_number == i.phone_number %}
                 <tr style="text-align: center; background-color: cyan;">
+                    <td>{{i.name}}</td>
+                    <td>{{i.phone_number}}</td>
                     <td>{{i.med_name}}</td>
-                    <td>{{i.stock}}</td>
-                    <td>{{i.rate_per_tab_bought}}</td>
-                    <td>{{i.rate_per_tab_sell}}</td>
-                    <td>{{i.symptoms}}</td>
-                    <td>{{i.entry_date}}</td>
-                    <td>{{i.expiry_date}}</td>
-                    <td>{{i.sold}}</td>
-                    <td><input type="submit" id="Button1" name="{{i.id}}" value="edit"><input type="submit" id="Button1" name="{{i.id}}" value="delete"></td>
+                    <td>{{i.no_of_tabs}}</td>
+                    <td>{{i.sale_price}}</td>
+                    <td>{{i.profit}}</td>
+                    <td>{{i.selling_date}}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </table>
+        {% endif %}
+    <br>
+    {% if date != 0 %}
+            <table id="dataTable" border="2" align="center" style="background-color: darkseagreen;">
+                <th style="text-align: center;">Customer Name</th>
+                <th style="text-align: center;">Phone no.</th>
+                <th style="text-align: center;">Name of medicine</th>
+                <th style="text-align: center;">Number of tablets</th>
+                <th style="text-align: center;">Selling price</th>
+                <th style="text-align: center;">Profit</th>
+                <th style="text-align: center;">Selling date</th>
+                {% for i in sales_recs %}
+                {% if date.date() == i.selling_date.date() %}
+                <tr style="text-align: center; background-color: cyan;">
+                    <td>{{i.name}}</td>
+                    <td>{{i.phone_number}}</td>
+                    <td>{{i.med_name}}</td>
+                    <td>{{i.no_of_tabs}}</td>
+                    <td>{{i.sale_price}}</td>
+                    <td>{{i.profit}}</td>
+                    <td>{{i.selling_date}}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </table>
+        {% endif %}
+    <br>
+        {% if phone_number == 0 and date == 0 %}
+        <TABLE id="dataTable" border="2" align="center" style="background-color: darkseagreen;">
+            <th style="text-align: center;">Customer Name</th>
+            <th style="text-align: center;">Phone no.</th>
+            <th style="text-align: center;">Name of medicine</th>
+            <th style="text-align: center;">Number of tablets</th>
+            <th style="text-align: center;">Selling price</th>
+            <th style="text-align: center;">Profit</th>
+            <th style="text-align: center;">Selling date</th>
+                {% for i in sales_recs %}
+                <tr style="text-align: center; background-color: cyan;">
+                    <td>{{i.name}}</td>
+                    <td>{{i.phone_number}}</td>
+                    <td>{{i.med_name}}</td>
+                    <td>{{i.no_of_tabs}}</td>
+                    <td>{{i.sale_price}}</td>
+                    <td>{{i.profit}}</td>
+                    <td>{{i.selling_date}}</td>
                 </tr>
                 {% endfor %}    
           </TABLE>
-        </form>
+          {% endif %}
     <br><br>
     
 </body>

@@ -96,6 +96,7 @@ class Sales(db.Model):
 class Customer(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(100))
+	phone_number = db.Column(db.String(12))
 	order = db.relationship('Sales', backref='buyer')
 
 
@@ -152,9 +153,9 @@ def add_med(med_name, expiry_date, stock, symptoms, rate_per_tab_bought, rate_pe
 
 
 ##customer
-def add_customer(name):
+def add_customer(name, phone_number):
 	name = name.capitalize()
-	customer = Customer(name = name)
+	customer = Customer(name = name, phone_number = phone_number)
 	db.session.add(customer)
 	db.session.commit()
 
@@ -180,10 +181,10 @@ def calc_bill(med_list):
 
 
 ##to add sales records of a customer
-def customer_entry(med_list, customer_name):
+def customer_entry(med_list, customer_name, phone_number):
 	# add_customer(customer_name)
 	customer_name = customer_name.capitalize()
-	customer = Customer(name = customer_name)
+	customer = Customer(name = customer_name, phone_number = phone_number)
 	db.session.add(customer)
 	db.session.commit()
 	some_pharamacist = Pharmacists.query.filter_by(email = session['email']).first()
@@ -203,6 +204,8 @@ def modify_stock(inventory, med_list):
 				inven.sold += info[1]
 				pharmacist_bs = Pharmacist_B_S.query.filter_by(salesman_id = session['id']).first()
 				pharmacist_bs.total_sold += info[1]
+				if inven.stock == 0:
+					db.session.delete(inven)
 				db.session.commit()
 				break
 	return inventory
@@ -224,24 +227,24 @@ def calc_end(y, m):
 		if (y % 4) == 0:
 			if (y % 100) == 0:
 				if (y % 400) == 0:
-				   return datetime.datetime(y,m,29)
+				   return datetime.datetime(y,m,29, 23, 59, 59)
 				else:
-				   return datetime.datetime(y,m,28)
+				   return datetime.datetime(y,m,28, 23, 59, 59)
 			else:
-				return datetime.datetime(y,m,29)
+				return datetime.datetime(y,m,29, 23, 59, 59)
 		else:
-			return datetime.datetime(y,m,28)
+			return datetime.datetime(y,m,28, 23, 59, 59)
 	else:
 		if m<=7:
 			if m%2==0:
-				return datetime.datetime(y,m,30)
+				return datetime.datetime(y,m,30, 23, 59, 59)
 			else:
-				return datetime.datetime(y,m,31)
+				return datetime.datetime(y,m,31, 23, 59, 59)
 		else:
 			if m%2==0:
-				return datetime.datetime(y,m,31)
+				return datetime.datetime(y,m,31, 23, 59, 59)
 			else:
-				return datetime.datetime(y,m,30)
+				return datetime.datetime(y,m,30, 23, 59, 59)
 
 
 
@@ -292,6 +295,36 @@ def get_s():
 	pharmacist_bs = Pharmacist_B_S.query.filter_by(salesman_id = session['id']).first()
 	return pharmacist_bs.total_sold
 
+##symptoms
+def symptoms_like(symptom):
+	search = "%{}%".format(symptom)
+	meds = Inventory.query.filter(Inventory.symptoms.like(search), Inventory.owner_id == session['id']).all()
+	return meds
+
+
+## pharmacist sales records
+def all_sales():
+	sales = Sales.query.filter_by(salesman_id = session['id']).all()
+	return sales
+
+## customer
+def make_dict_sale_recs():
+	sales = all_sales()
+	sales_with_customer = []
+	for sale in sales:
+		sale_with_customer = {}
+		customer = Customer.query.filter(Customer.id == sale.buyer_id).first()
+		if customer is not None:
+			sale_with_customer["name"] = customer.name
+			sale_with_customer["phone_number"] = customer.phone_number
+			sale_with_customer["med_name"] = sale.med_name
+			sale_with_customer["no_of_tabs"] = sale.no_of_tabs
+			sale_with_customer["sale_price"] = sale.sale_price
+			sale_with_customer["selling_date"] = sale.selling_date
+			sale_with_customer["profit"] = sale.profit
+			sales_with_customer.append(sale_with_customer)
+	return sales_with_customer
+
 
 #routes
 
@@ -307,7 +340,7 @@ def index():
 @app.route("/home")
 @login_required
 def home():
-	return render_template("login.html")
+	return render_template("home.html")
 
 
 
@@ -360,7 +393,7 @@ def login():
 					return redirect(next)
 
 
-				return redirect(url_for('add_medicine'))
+				return redirect(url_for('home'))
 		except:
 			flash("You have not registered yet!")
 			return redirect(url_for('login'))
@@ -402,12 +435,17 @@ def billing():
 	if request.method == 'POST':
 		if "customer_name" not in session:
 			customer_name = request.form.get("name")
+			phone_number = request.form.get("phone_number")
+			session["customer_number"] = phone_number
 			session["customer_name"] = customer_name
 			return redirect("billing")
 		else:
 			if request.form["action"] == "add":
 				med_name = request.form.get("med_name")
 				no_tabs = request.form.get("no_tabs")
+				if (no_tabs == "") or (med_name == ""):
+					flash("enter both fields")
+					return redirect(url_for("billing"))
 				no_tabs = int(no_tabs)
 				try:
 					# pharmacist = Pharmacists.query.filter_by(email = session['email']).first()
@@ -444,11 +482,17 @@ def billing():
 				customer_name = session["customer_name"]
 				total_bill = calc_bill(med_list)
 				# inventory_for_pr = Inventory.query.filter_by(owner_id = session['id'])
-				customer_entry(med_list, customer_name)
+				if not bool(med_list):
+					flash("empty bill")
+					session.pop("customer_name", None)
+					session.pop("customer_number", None)
+					return redirect(url_for("billing"))
+				customer_entry(med_list, customer_name, session["customer_number"])
 				inventory = Inventory.query.filter_by(owner_id = session['id'])
 				inventory = modify_stock(inventory, med_list)
 				db.session.commit()
 				session.pop("customer_name", None)
+				session.pop("customer_number", None)
 				return render_template("bill.html", total_bill = total_bill, med_list = med_list, customer_name = customer_name)
 	else:
 		if "customer_name" not in session:
@@ -566,9 +610,68 @@ def dashboard():
 	sales_p_m = calc_sales(year)
 
 	# sales_p_m = [3,4,5,6,7,8,9,5,3,1,5,3]
-	# print(sales_p_m)
+	print(sales_p_m)
 	return render_template("dashboard.html", year = year, prof_p_m = prof_p_m, sales_p_m = sales_p_m, total_sold = total_sold, total_bought = total_bought, option_years = option_years)
 
+
+##profile
+@app.route("/profile")
+@login_required
+def profile():
+	cur_pharmacist = Pharmacists.query.filter_by(id = session['id']).first()
+	return render_template("profile.html", name = cur_pharmacist.name, email = cur_pharmacist.email, address = cur_pharmacist.address, phone = cur_pharmacist.phone_number)
+
+
+
+##change pwd
+@app.route("/change_pwd", methods = ['POST'])
+@login_required
+def change_pwd():
+	if request.method == 'POST':
+		cur_password = request.form.get("password")
+		cur_pharmacist = Pharmacists.query.filter_by(id = session['id']).first()
+		if (not (check_password_hash(cur_pharmacist.pwd, cur_password))):
+			flash("Wrong password!")
+			return redirect(url_for("profile"))
+		new_password = request.form.get("newpassword")
+		confirm_password = request.form.get("confirmpassword")
+		if new_password != confirm_password:
+			flash("Passwords dont match!")
+			return redirect(url_for("profile"))
+		new_password = generate_password_hash(new_password, method='sha256')
+		cur_pharmacist.pwd = new_password
+		db.session.commit()
+		flash("password successfully changed")
+		return redirect(url_for("profile"))
+
+
+##symptoms
+@app.route("/symptom_search", methods = ['POST'])
+@login_required
+def symptom_search():
+	symptom = request.form.get("symptom")
+	meds = symptoms_like(symptom)
+	return render_template("display_query.html", query_for_med = meds)
+
+
+
+@app.route("/records", methods = ['GET', 'POST'])
+@login_required
+def records():
+	sales_recs = make_dict_sale_recs()
+	if request.method == 'GET':
+		return render_template("records.html", sales_recs = sales_recs, phone_number = 0, date = 0)
+	else:
+		try:
+			phone_number = request.form.get("phone_number")
+		except:
+			phone_number = 0
+		try:
+			date = request.form.get("date")
+			date = datetime.datetime.strptime(date, '%Y-%m-%d')
+		except:
+			date = 0
+		return render_template("records.html", sales_recs = sales_recs, phone_number = phone_number, date = date)
 
 
 

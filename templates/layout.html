@@ -1,42 +1,63 @@
+<!doctype html>
+<html>
+<head>
+  <style>
+    body {
+      background-image: url("{{url_for('static',filename='assets/images/j4t0DI.jpg')}}");
+    }
+    </style>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<meta charset="utf-8">
+<title>Pharmassist</title>
+<meta name="generator" content="WYSIWYG Web Builder 16 Trial Version - https://www.wysiwygwebbuilder.com">
+<link href="{{url_for('static',filename='assets/bootstr ap/css/Untitled2.css')}}" rel="stylesheet">
+<link href="{{url_for('static',filename='assets/bootstrap/css/layout.css')}}" rel="stylesheet">
+<script src="{{url_for('static',filename='assets/bootstrap/js/jquery-1.12.4.min.js')}}"></script>
+<script src="{{url_for('static',filename='assets/bootstrap/js/wb.panel.min.js')}}"></script>
+<script>
+$(document).ready(function()
+{
+   $("#PanelMenu1").panel({animate: true, animationDuration: 200, animationEasing: 'linear', dismissible: true, display: 'push', position: 'left', toggle: true});
+});
+</script>
+</head>
+<body>
+<div id="wb_ResponsiveMenu1" style="position:absolute;left:96px;top:0px;width:1251px;height:73px;z-index:1;">
+<label class="toggle" for="ResponsiveMenu1-submenu" id="ResponsiveMenu1-title">Menu<span id="ResponsiveMenu1-icon"><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span></span></label>
+<input type="checkbox" id="ResponsiveMenu1-submenu">
+<ul class="ResponsiveMenu1" id="ResponsiveMenu1" role="menu">
+<li><a role="menuitem" href="/home"><i class="fa fa-home fa-2x">&nbsp;</i><br>Home</a></li>
+<li><a role="menuitem" href="/add_medicine"><i class="fa fa-ambulance fa-2x">&nbsp;</i><br>Add&nbsp;Item</a></li>
+<li><a role="menuitem" href="/inventory"><i class="fa fa-newspaper-o fa-2x">&nbsp;</i><br>Inventory</a></li>
+<li><a role="menuitem" href="/dashboard"><i class="fa fa-pie-chart fa-2x">&nbsp;</i><br>Dashboard</a></li>
+<li><a role="menuitem" href="/records"><i class="fa fa-history fa-2x">&nbsp;</i><br>records</a></li>
+<li><a role="menuitem" href="/billing"><i class="fa fa-calculator fa-2x">&nbsp;</i><br>Billing</a></li>
+</ul>
+</div>
+<div id="wb_PanelMenu1" style="position:absolute;left:0px;top:0px;width:94px;height:71px;text-align:center;z-index:2;">
+<a href="#PanelMenu1_markup" id="PanelMenu1">&nbsp;</a>
+<div id="PanelMenu1_markup">
+<ul role="menu">
+   <li role="menuitem"><a href="/about_us" class="nav-link">About Us</a></li>
+   <li role="menuitem"><a href="/profile" class="nav-link">Profile</a></li>
+   <li role="menuitem"><a href="/logout" class="nav-link">Logout</a></li>
+</ul>
+</div>
+</div>
+
+<br><br>
+<br><br><br><br>
 {% with messages = get_flashed_messages() %}
 {% if messages %}
 {% for msg in messages %}
-<div class="alert alert-warning" role="alert">
+<div style = "padding: 20px;background-color: yellow;color: white;">
     {{msg}}
 </div>
 {% endfor %}
 {% endif %}
 {% endwith %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>PharmaAssist</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-</head>
-<body style="height:1500px">
-
-<nav class="navbar navbar-inverse ">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="#">PharmaAssist</a>
-    </div>
-    <ul class="nav navbar-nav">
-      <li class="active"><a href="#">Home</a></li>
-      <li><a href="/billing">Billing</a></li>
-      <li><a href="/add_medicine">Add Item</a></li>
-      <li><a href="/inventory">Inventory</a></li>
-      <li><a href="/dashboard">Dashboard</a></li>
-    </ul>
-    <ul class="nav navbar-nav navbar-right">
-      <li><a href="/logout"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
-    </ul>
-  </div>
-</nav>
-</body>
 {% block body %}
 {% endblock %}
+</body>
 </html>

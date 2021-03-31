@@ -3,31 +3,301 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<style>
+body
+{
+   background-color: #FFFFFF;
+   background-image: url("{{url_for('static',filename='assets/images/j4t0DI.jpg')}}");
+   background-attachment: scroll;
+   background-position: left top;
+   background-repeat: repeat;
+   color:white;
+   font-family: Arial;
+   font-weight: normal;
+   font-size: 13px;
+   line-height: 1.1875;
+   margin: 0;
+   padding: 0;
+}
+a
+{
+   color: #0000FF;
+   text-decoration: underline;
+}
+a:visited
+{
+   color: #800080;
+}
+a:hover
+{
+   color: #0000FF;
+   text-decoration: underline;
+}
+input:focus, textarea:focus, select:focus
+{
+   outline: none;
+}
+#wb_Shape1
+{
+   transform: rotate(0deg);
+   transform-origin: 50% 50%;
+}
+#Shape1
+{
+   border-width: 0;
+   vertical-align: top;
+}
+#wb_Text1 
+{
+   background-color: transparent;
+   background-image: none;
+   border: 0px solid #000000;
+   padding: 0;
+   margin: 0;
+   text-align: center;
+}
+#wb_Text1 div
+{
+   text-align: center;
+}
+#wb_Text2 
+{
+   background-color: transparent;
+   background-image: none;
+   border: 0px solid #000000;
+   padding: 0;
+   margin: 0;
+   text-align: left;
+}
+#wb_Text2 div
+{
+   text-align: left;
+}
+table, th, td {
+  border: 2px solid black;
+}
+#Table1
+{
+  
+   border: 2px solid #C0C0C0;
+   background-color: transparent;
+   background-image: none;
+   border-collapse: separate;
+   border-spacing: 1px;
+   margin: 0;
+}
+#Table1 td
+{
+   padding: 0;
+}
+#Table1 td div
+{
+   white-space: nowrap;
+}
+#Table1 p, #Table1 ul
+{
+   margin: 0;
+   padding: 0;
+}
+#Table1 .cell0
+{
+   background-color: transparent;
+   background-image: none;
+   border: 1px #C0C0C0 solid;
+   text-align: center;
+   vertical-align: top;
+   width: 168px;
+   height: 46px;
+   color: #FFFFFF;
+   font-family: Arial;
+   font-size: 21px;
+   line-height: 24.5px;
+}
+#Table1 .cell1
+{
+   background-color: transparent;
+   background-image: none;
+   border: 1px #C0C0C0 solid;
+   text-align: left;
+   vertical-align: top;
+   width: 168px;
+   height: 46px;
+   color: #000000;
+   font-family: Arial;
+   font-size: 13px;
+   line-height: 16px;
+}
+#Table1 .cell2
+{
+   background-color: transparent;
+   background-image: none;
+   border: 1px #C0C0C0 solid;
+   text-align: left;
+   vertical-align: top;
+   height: 46px;
+   color: #000000;
+   font-family: Arial;
+   font-size: 13px;
+   line-height: 16px;
+}
+#Table1 .cell3
+{
+   background-color: transparent;
+   background-image: none;
+   border: 1px #C0C0C0 solid;
+   text-align: left;
+   vertical-align: top;
+   width: 168px;
+   height: 50px;
+   color: #000000;
+   font-family: Arial;
+   font-size: 13px;
+   line-height: 16px;
+}
+#Table1 .cell4
+{
+   background-color: transparent;
+   background-image: none;
+   border: 1px #C0C0C0 solid;
+   text-align: left;
+   vertical-align: top;
+   height: 50px;
+   color: #000000;
+   font-family: Arial;
+   font-size: 13px;
+   line-height: 16px;
+}
+h1, .h1
+{
+   font-family: Arial;
+   font-weight: bold;
+   font-size: 32px;
+   text-decoration: none;
+   color: #000000;
+   background-color: transparent;
+   margin: 0px 0px 0px 0px;
+   padding: 0px 0px 0px 0px;
+   display: inline;
+}
+h2, .h2
+{
+   font-family: Arial;
+   font-weight: bold;
+   font-size: 27px;
+   text-decoration: none;
+   color: #000000;
+   background-color: transparent;
+   margin: 0px 0px 0px 0px;
+   padding: 0px 0px 0px 0px;
+   display: inline;
+}
+h3, .h3
+{
+   font-family: Arial;
+   font-weight: bold;
+   font-size: 24px;
+   text-decoration: none;
+   color: #000000;
+   background-color: transparent;
+   margin: 0px 0px 0px 0px;
+   padding: 0px 0px 0px 0px;
+   display: inline;
+}
+h4, .h4
+{
+   font-family: Arial;
+   font-weight: bold;
+   font-size: 21px;
+   font-style: italic;
+   text-decoration: none;
+   color: #000000;
+   background-color: transparent;
+   margin: 0px 0px 0px 0px;
+   padding: 0px 0px 0px 0px;
+   display: inline;
+}
+h5, .h5
+{
+   font-family: Arial;
+   font-weight: bold;
+   font-size: 19px;
+   text-decoration: none;
+   color: #000000;
+   background-color: transparent;
+   margin: 0px 0px 0px 0px;
+   padding: 0px 0px 0px 0px;
+   display: inline;
+}
+h6, .h6
+{
+   font-family: Arial;
+   font-weight: bold;
+   font-size: 16px;
+   text-decoration: none;
+   color: #000000;
+   background-color: transparent;
+   margin: 0px 0px 0px 0px;
+   padding: 0px 0px 0px 0px;
+   display: inline;
+}
+.CustomStyle
+{
+   font-family: "Courier New";
+   font-weight: bold;
+   font-size: 16px;
+   text-decoration: none;
+   color: #2E74B5;
+   background-color: transparent;
+}
+
+</style>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bill</title>
+	
 </head>
 <body>
-    <h1>Final bill</h1>
-    <h3>Name of customer : {{customer_name}}</h3>
-    <TABLE id="dataTable" width="350px" border="1">
-		<th>Name of medicine</th>
-		<th>Number of tablets</th>
-		<th>total</th>
+  
+<div id="wb_Shape1" style="position:absolute;left:272px;top:102px;width:800px;height:570px;z-index:0;">
+<img src="{{url_for('static',filename='assets/images/img0001.png')}}" id="Shape1" alt="" style="width:800px;height:570px;"></div>
+<div id = 1>
+<div id="wb_Text1" style="position:absolute;left:555px;top:133px;width:266px;height:80px;text-align:center;z-index:2;">
+<span style="color:#FFFFFF;font-family:Impact;font-size:64px;"><u>Final Bill</u></span></div>
+<div id="wb_Text2" style="position:absolute;left:356px;top:294px;width:311px;height:32px;z-index:3;">
+<span style="color:#FFFFFF;font-family:Arial;font-size:20px;">Name of the Customer:- {{customer_name}}</span></div>
+ 
+    <center><table style="position:absolute;left:407px;top:377px;width:541px;height:106px;z-index:4;" id="Table1" style="text-align: center;">
+
+		<th class="cell0"><p style="font-size:13px;line-height:16px;color:#FFFFFF;">&nbsp;<span style="font-family:Comic Sans MS;font-size:21px;line-height:30px;">Name of medicine</span></p></th>
+		<th class="cell0"><p style="font-size:13px;line-height:16px;color:#FFFFFF;">&nbsp;<span style="font-family:Comic Sans MS;font-size:21px;line-height:30px;">Number of tablets</span></p></th>
+		<th class="cell0"><p style="font-size:13px;line-height:16px;color:#FFFFFF;">&nbsp;<span style="font-family:Comic Sans MS;font-size:21px;line-height:30px;">Total</span></p></th>
+
 		{% for med, info in med_list.items() %}
-		<TR>
+		<TR style="text-align: center;">
 			<TD> {{med}} </TD>
-			
 				<TD> {{info[0]}} </TD>
 				<TD> {{info[1]}} </TD>
-			
 		</TR>
 		{% endfor %}
-        <tr>
+        <tr style="text-align: right;">
             <td colspan="3"><b>Grand Total ={{total_bill}}</b> </td>
         </tr>
 	</TABLE>
+
+</center>
+</div>
+<button style="float: right;"><a href="javascript:void(0);" onclick="printPageArea('1')"><h4>Print</h4> </a></button>
+  <script >function printPageArea(areaID){
+    var printContent = document.getElementById(areaID);
+    var WinPrint = window.open('', '', 'width=900,height=650');
+    WinPrint.document.write(printContent.innerHTML);
+    WinPrint.document.close();
+    WinPrint.focus();
+    WinPrint.print();
+    WinPrint.close();
+}
+</script>
 </body>
 </html>
 {% endblock %}

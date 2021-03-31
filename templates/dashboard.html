@@ -1,6 +1,6 @@
-<!DOCTYPE HTML>
-<html>
-<head>
+{% extends "layout.html" %}
+{% block body %}
+<title>Pharmassist</title>
 <script>
 window.onload = function () {
 
@@ -131,22 +131,24 @@ function toggleDataSeries(e) {
 
 }
 </script>
-</head>
-<body>
 	<div id="chartContainer" style="height: 300px; width: 100%;"></div>
 <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+<hr style="border-top: 1px dashed black;">
+<br>
+<center>
+	<form action="/dashboard" method="POST">select year : &nbsp;
+		<select name="year">
+			{% for i in option_years %}
+				<option value="{{i}}">{{i}}</option>	
+			{% endfor %}
+		</select>
+		<input type="submit" name="submit">
+	</form>
+	<h2>Sales vs Profit data for year {{year}}</h2>
+</center>
 	<center><div id="chartContainer2" style="height: 300px; width: 80%;"></div>
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script></center>
-<center>
-  <form action="/dashboard" method="POST">select year :
-    <select name="year">
-      {% for i in option_years %}
-        <option value="{{i}}">{{i}}</option>  
-      {% endfor %}
-    </select>
-  </form>
-</center>
 
-</body>
-</html>
+
+{% endblock %}

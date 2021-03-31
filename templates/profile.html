@@ -1,0 +1,89 @@
+{% extends "layout.html" %}
+{% block body %}
+<!doctype html>
+<html>
+<head>
+   <style>
+      .alert {
+  padding: 20px;
+  background-color: #f44336;
+  color: white;
+}
+
+.closebtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.closebtn:hover {
+  color: black;
+}
+   </style>
+<meta charset="utf-8">
+<title>Untitled Page</title>
+<meta name="generator" content="WYSIWYG Web Builder 16 Trial Version - https://www.wysiwygwebbuilder.com">
+<link href="{{url_for('static',filename='assets/bootstrap/css/Untitled3.css')}}" rel="stylesheet">
+<link href="{{url_for('static',filename='assets/bootstrap/css/index.css')}}" rel="stylesheet">
+</head>
+<body>
+<div id="wb_Shape1" style="position:absolute;left:240px;top:93px;width:816px;height:934px;z-index:0;">
+<img src="{{url_for('static',filename='assets/images/img0001.png')}}" id="Shape1" alt="" style="width:816px;height:934px;"></div>
+<picture id="wb_Picture1" style="position:absolute;left:524px;top:200px;width:221px;height:205px;z-index:2">
+<img src="{{url_for('static',filename='assets/images/avatar.png')}}" id="Picture1" alt="">
+</picture>
+<div id="wb_Text1" style="position:absolute;left:271px;top:427px;width:727px;height:261px;z-index:3;">
+<span style="color:#FFFFFF;font-family:'Comic Sans MS';font-size:24px;"><strong><u>Name:- {{name}}<br><br>Email:- {{email}}<br><br>Phone:- {{phone}}<br><br>Address:- {{address}}</u></strong></span><span style="color:#000000;font-family:Arial;font-size:13px;"><br></span></div>
+<div id="wb_Text2" style="position:absolute;left:465px;top:98px;width:338px;height:74px;text-align:center;z-index:4;">
+<span style="color:#FFFFFF;font-family:'Comic Sans MS';font-size:53px;"><u>Profile</u></span></div>
+<div id="wb_ChangePassword1" style="position:absolute;left:272px;top:705px;width:754px;height:269px;z-index:5;">
+<form name="changepasswordform" method="post" accept-charset="UTF-8" action="/change_pwd" id="changepasswordform">
+<input type="hidden" name="form_name" value="changepassword">
+<table id="ChangePassword1">
+<tr>
+   <td class="header">Change your password</td>
+</tr>
+<tr>
+   <td ><label for="password">Password</label></td>
+</tr>
+<tr>
+   <td class="row"><input class="input" name="password" type="password" id="password" required></td>
+</tr>
+<tr>
+   <td><label for="newpassword">New Password</label></td>
+</tr>
+<tr>
+   <td class="row"><input class="input" name="newpassword" type="password" id="newpassword" required></td>
+</tr>
+<tr>
+   <td><label for="confirmpassword">Confirm New Password</label></td>
+</tr>
+<tr>
+   <td class="row"><input class="input" name="confirmpassword" type="password" id="confirmpassword" required></td>
+</tr>
+<tr>
+   <td style="text-align:center;vertical-align:bottom"><input class="button" type="submit" name="changepassword" value="Change Password" id="changepassword"></td>
+</tr>
+</table>
+</form>
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for msg in messages %}
+    <div class="alert">
+      <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+      <strong>{{msg}}</strong>
+    </div>
+    {% endfor %}
+    {% endif %}
+{% endwith %}
+
+</div>
+</body>
+</html>
+{% endblock %}

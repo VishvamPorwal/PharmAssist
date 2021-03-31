@@ -6,15 +6,27 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sign up</title>
+    <title>Billing</title>
+    <style>
+        body {
+          background-image: url("{{url_for('static',filename='assets/images/j4t0DI.jpg')}}");
+          color: white;
+        }
+        table, th, td {
+  border: 2px solid black;
+}
+        </style>
 </head>
-<body>
+<center>
+    <body>
     
     {% if is_named_in == False %}
         <form action="/billing" method="POST">
-            <label for="name"><b>Name</b></label>
-            <input type="text" placeholder="Enter Name" name="name" required>
-            <input type ="submit" value="add_name">
+            <label for="name"><b>Customer Name</b></label>
+            <input type="text" placeholder="Enter customer name" name="name" required><br><br>
+            <label for="phone_number"><b>Phone number</b></label>
+            <input type="text" minlength="10" placeholder="Enter cust. no." name = "phone_number" required> <br><br>
+            <input type ="submit" value="add_name" style="background-color: #008CBA;">
         </form>
     {% endif %}
 
@@ -26,16 +38,16 @@
     <th>total</th>
     {% for med, info in med_list.items() %}
     <TR>
-      <TD> {{med}} </TD>
-      {% for i in info %}
-        <TD> {{i}} </TD>
-      {% endfor %}
+        <TD> {{med}} </TD>
+        <TD> {{info[0]}} </TD>
+        <TD> {{info[1]}} </TD>
     </TR>
     {% endfor %}
   </TABLE>
   <br><br>
+
         <form action="/billing" method="POST">
-            <label for="name"><b>Name</b></label>
+            <label for="name"><b>Name of Medicine</b></label>
             <input list="inventories" name="med_name" id="inventory" autocomplete="off">
             <datalist id="inventories">
                 {% for i in inventory_list %}
@@ -43,11 +55,13 @@
                 {% endfor %}
               </datalist>
             <input type="number" placeholder="Enter tabs " name="no_tabs">
-            <input type ="submit" name="action" value="add">
-            <input type ="submit" name="action" value="clear">
-            <input type ="submit" name="action" value="done">
+            <input type ="submit" name="action" value="add" style="background-color: #008CBA;">
+            <input type ="submit" name="action" value="clear" style="background-color: #008CBA;">
+            <input type ="submit" name="action" value="done" style="background-color: #008CBA;">
         </form>
     {% endif %}
 </body>
+</center>
+
 </html>
 {% endblock %}

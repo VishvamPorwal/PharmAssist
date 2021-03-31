@@ -1,62 +1,429 @@
 {% extends "layout.html" %}
 {% block body %}
-<!DOCTYPE html>
-<html lang="en">
-    <style>
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-        }
-    
-        form {
-            border: 3px solid #f1f1f1;
-        }
-    
-        input[type=text],input[type=number] {
-            width: 50%;
-            padding: 12px 20px;
-            margin: 8px 0;
-            display: inline-block;
-            border: 1px solid #ccc;
-            box-sizing: border-box;
-        }
-    
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 14px 20px;
-            margin: 8px 0;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-        }
-    
-        button:hover {
-            opacity: 0.8;
-        }
-        </style>
+<!doctype html>
+<html>
+<style>
+body
+{
+   background-color: #FFFFFF;
+   background-image: url("{{url_for('static',filename='assets/images/which-adhd-medication-is-best-pharmacy-shelves-ts-639237552.png')}}");
+   background-attachment: scroll;
+   background-position: left top;
+   background-repeat: repeat;
+   color: #000000;
+   font-family: Arial;
+   font-weight: normal;
+   font-size: 13px;
+   line-height: 1.1875;
+   margin: 0;
+   padding: 0;
+}
+a
+{
+   color: #0000FF;
+   text-decoration: underline;
+}
+a:visited
+{
+   color: #800080;
+}
+a:hover
+{
+   color: #0000FF;
+   text-decoration: underline;
+}
+input:focus, textarea:focus, select:focus
+{
+   outline: none;
+}
+#wb_Image1
+{
+   vertical-align: top;
+}
+#Image1
+{
+   border: 0px solid #000000;
+   padding: 0;
+   margin: 0;
+   left: 0;
+   top: 0;
+   width: 100%;
+   height: 100%;
+}
+#Editbox1
+{
+   border: 1px solid #000000;
+   border-radius: 6px;
+   background-color: #FFFFFF;
+   background-image: none;
+   color: #555555;
+   font-family: "Courier New";
+   font-weight: normal;
+   font-style: normal;
+   font-size: 13px;
+   line-height: 31px;
+   padding: 4px 4px 4px 4px;
+   margin: 0;
+   text-align: left;
+}
+#Editbox1:focus
+{
+   border-color: #66AFE9;
+   box-shadow: inset 0px 1px 1px rgba(0,0,0,0.075), 0px 0px 8px rgba(102,175,233,0.60);
+   outline: 0;
+}
+#wb_Form1
+{
+   background-color: #FBFBFB;
+   background-image: none;
+   border: 0px solid #CCCCCC;
+}
+#wb_Text2 
+{
+   background-color: transparent;
+   background-image: none;
+   border: 0px solid #000000;
+   padding: 0;
+   margin: 0;
+   text-align: left;
+}
+#wb_Text2 div
+{
+   text-align: left;
+}
+#Editbox2
+{
+   border: 1px solid #000000;
+   border-radius: 4px;
+   background-color: #FFFFFF;
+   background-image: none;
+   color: #555555;
+   font-family: "Courier New";
+   font-weight: normal;
+   font-style: normal;
+   font-size: 13px;
+   line-height: 31px;
+   padding: 4px 4px 4px 4px;
+   margin: 0;
+   text-align: left;
+}
+#Editbox2:focus
+{
+   border-color: #66AFE9;
+   box-shadow: inset 0px 1px 1px rgba(0,0,0,0.075), 0px 0px 8px rgba(102,175,233,0.60);
+   outline: 0;
+}
+#wb_Text4 
+{
+   background-color: transparent;
+   background-image: none;
+   border: 0px solid #000000;
+   padding: 0;
+   margin: 0;
+   text-align: left;
+}
+#wb_Text4 div
+{
+   text-align: left;
+}
+#Editbox3
+{
+   border: 1px solid #000000;
+   border-radius: 6px;
+   background-color: #FFFFFF;
+   background-image: none;
+   color: #555555;
+   font-family: "Courier New";
+   font-weight: normal;
+   font-style: normal;
+   font-size: 13px;
+   line-height: 31px;
+   padding: 4px 4px 4px 4px;
+   margin: 0;
+   text-align: left;
+}
+#Editbox3:focus
+{
+   border-color: #66AFE9;
+   box-shadow: inset 0px 1px 1px rgba(0,0,0,0.075), 0px 0px 8px rgba(102,175,233,0.60);
+   outline: 0;
+}
+#wb_Text5 
+{
+   background-color: transparent;
+   background-image: none;
+   border: 0px solid #000000;
+   padding: 0;
+   margin: 0;
+   text-align: left;
+}
+#wb_Text5 div
+{
+   text-align: left;
+}
+#Editbox4
+{
+   border: 1px solid #000000;
+   border-radius: 6px;
+   background-color: #FFFFFF;
+   background-image: none;
+   color: #555555;
+   font-family: "Courier New";
+   font-weight: normal;
+   font-style: normal;
+   font-size: 13px;
+   line-height: 31px;
+   padding: 4px 4px 4px 4px;
+   margin: 0;
+   text-align: left;
+}
+#Editbox4:focus
+{
+   border-color: #66AFE9;
+   box-shadow: inset 0px 1px 1px rgba(0,0,0,0.075), 0px 0px 8px rgba(102,175,233,0.60);
+   outline: 0;
+}
+#wb_Text6 
+{
+   background-color: transparent;
+   background-image: none;
+   border: 0px solid #000000;
+   padding: 0;
+   margin: 0;
+   text-align: left;
+}
+#wb_Text6 div
+{
+   text-align: left;
+}
+#Editbox5
+{
+   border: 1px solid #000000;
+   border-radius: 6px;
+   background-color: #FFFFFF;
+   background-image: none;
+   color: #555555;
+   font-family: "Courier New";
+   font-weight: normal;
+   font-style: normal;
+   font-size: 13px;
+   line-height: 31px;
+   padding: 4px 4px 4px 4px;
+   margin: 0;
+   text-align: left;
+}
+#Editbox5:focus
+{
+   border-color: #66AFE9;
+   box-shadow: inset 0px 1px 1px rgba(0,0,0,0.075), 0px 0px 8px rgba(102,175,233,0.60);
+   outline: 0;
+}
+#wb_Text7 
+{
+   background-color: transparent;
+   background-image: none;
+   border: 0px solid #000000;
+   padding: 0;
+   margin: 0;
+   text-align: left;
+}
+#wb_Text7 div
+{
+   text-align: left;
+}
+#Editbox6
+{
+   border: 1px solid #CCCCCC;
+   border-radius: 4px;
+   background-color: #FFFFFF;
+   background-image: none;
+   color: #555555;
+   font-family: "Courier New";
+   font-weight: normal;
+   font-style: normal;
+   font-size: 13px;
+   line-height: 16px;
+   padding: 4px 4px 4px 4px;
+   margin: 0;
+   text-align: left;
+}
+#Editbox6:focus
+{
+   border-color: #66AFE9;
+   box-shadow: inset 0px 1px 1px rgba(0,0,0,0.075), 0px 0px 8px rgba(102,175,233,0.60);
+   outline: 0;
+}
+#Button1
+{
+   border: 1px solid #000000;
+   border-radius: 7px;
+   background-color: #1E90FF;
+   background-image: none;
+   color: #FFFFFF;
+   font-family: "Comic Sans MS";
+   font-weight: normal;
+   font-style: normal;
+   font-size: 13px;
+   padding: 0;
+   text-align: left;
+   -webkit-appearance: none;
+   margin: 0;
+}
+#wb_Text3 
+{
+   background-color: transparent;
+   background-image: none;
+   border: 0px solid #000000;
+   padding: 0;
+   margin: 0;
+   text-align: left;
+}
+#wb_Text3 div
+{
+   text-align: left;
+}
+#wb_Text1 
+{
+   background-color: transparent;
+   background-image: none;
+   border: 0px solid #000000;
+   padding: 0;
+   margin: 0;
+   text-align: left;
+}
+#wb_Text1 div
+{
+   text-align: left;
+}
+h1, .h1
+{
+   font-family: Arial;
+   font-weight: bold;
+   font-size: 32px;
+   text-decoration: none;
+   color: #000000;
+   background-color: transparent;
+   margin: 0px 0px 0px 0px;
+   padding: 0px 0px 0px 0px;
+   display: inline;
+}
+h2, .h2
+{
+   font-family: Arial;
+   font-weight: bold;
+   font-size: 27px;
+   text-decoration: none;
+   color: #000000;
+   background-color: transparent;
+   margin: 0px 0px 0px 0px;
+   padding: 0px 0px 0px 0px;
+   display: inline;
+}
+h3, .h3
+{
+   font-family: Arial;
+   font-weight: bold;
+   font-size: 24px;
+   text-decoration: none;
+   color: #000000;
+   background-color: transparent;
+   margin: 0px 0px 0px 0px;
+   padding: 0px 0px 0px 0px;
+   display: inline;
+}
+h4, .h4
+{
+   font-family: Arial;
+   font-weight: bold;
+   font-size: 21px;
+   font-style: italic;
+   text-decoration: none;
+   color: #000000;
+   background-color: transparent;
+   margin: 0px 0px 0px 0px;
+   padding: 0px 0px 0px 0px;
+   display: inline;
+}
+h5, .h5
+{
+   font-family: Arial;
+   font-weight: bold;
+   font-size: 19px;
+   text-decoration: none;
+   color: #000000;
+   background-color: transparent;
+   margin: 0px 0px 0px 0px;
+   padding: 0px 0px 0px 0px;
+   display: inline;
+}
+h6, .h6
+{
+   font-family: Arial;
+   font-weight: bold;
+   font-size: 16px;
+   text-decoration: none;
+   color: #000000;
+   background-color: transparent;
+   margin: 0px 0px 0px 0px;
+   padding: 0px 0px 0px 0px;
+   display: inline;
+}
+.CustomStyle
+{
+   font-family: "Courier New";
+   font-weight: bold;
+   font-size: 16px;
+   text-decoration: none;
+   color: #2E74B5;
+   background-color: transparent;
+}
+
+</style>
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Meddicine</title>
+<meta charset="utf-8">
+<title>Pharmassist</title>
+<meta name="generator" content="WYSIWYG Web Builder 16 Trial Version - https://www.wysiwygwebbuilder.com">
+
 </head>
 <body>
-    <h2>Enter following details to add item in inventory...</h2>
-    <form action="/add_medicine" method="POST">
-    <label for="med_name">Enter name of medicine : </label><br>
-    <input type="text" name="med_name"> <br>
-    <label for="stock">Number of tablets : </label><br>
-    <input type="number" name="stock"><br>
-    <label for="rate_per_tab_bought">Buying price (per tablet) : </label><br>
-    <input type="number" name="rate_per_tab_bought"><br>
-    <label for="rate_per_tab_sell">Selling price (per tablet) : </label><br>
-    <input type="number" name="rate_per_tab_sell"><br>
-    <label for="symptoms">Symptoms : </label><br>
-    <input type="text" name="symptoms"><br>
-    <label for="expiry_date">Expiry date : </label><br>
-    <input type="date" name="expiry_date"><br><br>
-    <input type="submit" name="add" value="add to inventory">
-    </form>
+<div id="wb_Form1" style="position:absolute;left:352px;top:150px;width:546px;height:488px;z-index:14;">
+<form name="Form1" method="post" action="/add_medicine" enctype="application/x-www-form-urlencoded" id="Form1">
+<input type="text" id="Editbox1" style="position:absolute;left:6px;top:32px;width:493px;height:31px;z-index:0;" name="med_name" value="" spellcheck="false" required>
+<div id="wb_Text2" style="position:absolute;left:0px;top:15px;width:184px;height:18px;z-index:1;">
+<span style="color:#000000;font-family:Arial;font-size:16px;">Enter name of medicine : </span></div>
+<input type="text" id="Editbox2" style="position:absolute;left:6px;top:108px;width:493px;height:31px;z-index:2;" name="stock" value="" spellcheck="false" required>
+<div id="wb_Text4" style="position:absolute;left:5px;top:156px;width:185px;height:18px;z-index:3;">
+<span style="color:#000000;font-family:Arial;font-size:16px;">Buying price (per tablet) : </span></div>
+<input type="text" id="Editbox3" style="position:absolute;left:6px;top:184px;width:493px;height:31px;z-index:4;" name="rate_per_tab_bought" value="" spellcheck="false" required>
+<div id="wb_Text5" style="position:absolute;left:5px;top:232px;width:184px;height:18px;z-index:5;">
+<span style="color:#000000;font-family:Arial;font-size:16px;">Selling price (per tablet) : </span></div>
+<input type="text" id="Editbox4" style="position:absolute;left:6px;top:259px;width:493px;height:31px;z-index:6;" name="rate_per_tab_sell" value="" spellcheck="false" required>
+<div id="wb_Text6" style="position:absolute;left:5px;top:308px;width:91px;height:18px;z-index:7;">
+<span style="color:#000000;font-family:Arial;font-size:16px;">Symptoms(optional) : </span></div>
+<input type="text" id="Editbox5" style="position:absolute;left:6px;top:335px;width:493px;height:31px;z-index:8;" name="symptoms" value="" spellcheck="false">
+<div id="wb_Text7" style="position:absolute;left:5px;top:383px;width:95px;height:18px;z-index:9;">
+<span style="color:#000000;font-family:Arial;font-size:16px;">Expiry date : </span></div>
+<input type="date" id="Editbox6" style="position:absolute;left:7px;top:404px;width:143px;height:16px;z-index:10;" name="expiry_date" value="" spellcheck="false" required>
+<input type="submit" id="Button1" name="add" onclick="myFunction()" value="Add To Inventory" style="position:absolute;left:7px;top:446px;width:140px;height:24px;z-index:11;">
+<div id="wb_Text3" style="position:absolute;left:5px;top:81px;width:142px;height:18px;z-index:12;">
+<span style="color:#000000;font-family:Arial;font-size:16px;">Number of tablets : </span></div>
+</form>
+</div>
+<div id="wb_Text1" style="position:absolute;left:306px;top:100px;width:1014px;height:80px;z-index:0;">
+<span style="background-color:#EE82EE;color:#000000;font-family:'Comic Sans MS';font-size:29px;"><strong>Enter following details to add item in inventory...<br></strong></span></div>
+<script>
+   {% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for msg in messages %}
+function myFunction() {
+alert("{{msg}}");
+}
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+</script>
 </body>
+
 </html>
 {% endblock %}

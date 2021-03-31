@@ -6,9 +6,26 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        body
+{
+   background-color: #FFFFFF;
+   background-image: url("{{url_for('static',filename='assets/images/j4t0DI.jpg')}}");
+   background-attachment: scroll;
+   background-position: left top;
+   background-repeat: repeat;
+   color: white;
+   font-family: Arial;
+   font-weight: normal;
+   font-size: 13px;
+   line-height: 1.1875;
+   margin: 0;
+   padding: 0;
+}
+    </style>
 </head>
 <body>
-    <TABLE id="dataTable" border="2" align="center">
+    <center><TABLE id="dataTable" border="2" align="center">
         <th style="text-align: center;">Name of medicine</th>
         <th style="text-align: center;">Number of tablets/stock</th>
         <th style="text-align: center;">Buying price</th>
@@ -31,18 +48,19 @@
       <form action="/edited" method="POST">
         <br>
         <label for="med_name">Enter name of medicine : </label><br>
-        <input type="text" name="med_name"> <br>
+        <input type="text" name="med_name"> <br><br><br>
         <label for="stock">Number of tablets/items : </label><br>
-        <input type="number" name="stock"><br>
+        <input type="number" name="stock"><br><br><br>
         <label for="rate_per_tab_sell">Selling price (per tablet/item) : </label><br>
-        <input type="number" step="any" min="0" name="rate_per_tab_sell"><br>
+        <input type="number" step="any" min="0" name="rate_per_tab_sell"><br><br><br>
         <label for="symptoms">Symptoms : </label><br>
-        <input type="text" name="symptoms"><br>
+        <input type="text" name="symptoms"><br><br><br>
         <label for="expiry_date">Expiry date : </label><br>
-        <input type="date" name="expiry_date"><br><br>
+        <input type="date" name="expiry_date"><br><br><br>
         <input type="hidden" name="{{query_for_med.id}}" value="{{query_for_med.id}}" style="visibility: hidden; width: 0%;">
         <input type="submit" name="add" value="Save Changes">
-      </form>
+      </form></center>
+    
 </body>
 
 {% endblock %}
