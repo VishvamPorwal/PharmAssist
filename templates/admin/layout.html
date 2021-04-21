@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head>
+  <style>
+    body {
+      background-image: url("{{url_for('static',filename='assets/images/j4t0DI.jpg')}}");
+    }
+    </style>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<meta charset="utf-8">
+<title>Pharmassist(Admin)</title>
+<meta name="generator" content="WYSIWYG Web Builder 16 Trial Version - https://www.wysiwygwebbuilder.com">
+<link href="{{url_for('static',filename='assets/bootstrap/css/Untitled2.css')}}" rel="stylesheet">
+<link href="{{url_for('static',filename='assets/bootstrap/css/layout.css')}}" rel="stylesheet">
+<script src="{{url_for('static',filename='assets/bootstrap/js/jquery-1.12.4.min.js')}}"></script>
+<script src="{{url_for('static',filename='assets/bootstrap/js/wb.panel.min.js')}}"></script>
+<script>
+$(document).ready(function()
+{
+   $("#PanelMenu1").panel({animate: true, animationDuration: 200, animationEasing: 'linear', dismissible: true, display: 'push', position: 'left', toggle: true});
+});
+</script>
+</head>
+<body>
+<div id="wb_ResponsiveMenu1" style="position:absolute;left:0px;top:0px;width:1345px;height:73px;z-index:1;">
+<label class="toggle" for="ResponsiveMenu1-submenu" id="ResponsiveMenu1-title">Menu<span id="ResponsiveMenu1-icon"><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span></span></label>
+<input type="checkbox" id="ResponsiveMenu1-submenu">
+<ul class="ResponsiveMenu1" id="ResponsiveMenu1" role="menu">
+<li><a role="menuitem" href="/admin/"><i class="fa fa-home fa-2x">&nbsp;</i><br>Home</a></li>
+<li><a role="menuitem" href="/admin/pharmacists"><i class="fa fa-users fa-2x">&nbsp;</i><br>Users</a></li>
+<li><a role="menuitem" href="/dashboard"><i class="fa fa-pie-chart fa-2x">&nbsp;</i><br>Dashboard</a></li>
+<li><a role="menuitem" href="/records"><i class="fa fa-history fa-2x">&nbsp;</i><br>records</a></li>
+<li><a role="menuitem" href="/admin/logout"><i class="fa fa-sign-out fa-2x">&nbsp;</i><br>logout</a></li>
+</ul>
+</div>
+
+<br><br>
+
+<br><br><br><br>
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for msg in messages %}
+<div style = "padding: 20px;background-color: yellow;color: white;">
+    {{msg}}
+</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+{% block body %}
+{% endblock %}
+</body>
+</html>

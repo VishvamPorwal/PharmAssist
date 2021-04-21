@@ -1,0 +1,213 @@
+{% extends "admin/layout.html" %}
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory</title>
+    <style type="text/css">
+body
+{
+   background-color: #FFFFFF;
+   background-image: url("{{url_for('static',filename='assets/images/j4t0DI.jpg')}}");
+   background-attachment: scroll;
+   background-position: left top;
+   background-repeat: repeat;
+   color: #000000;
+   font-family: Arial;
+   font-weight: normal;
+   font-size: 13px;
+   line-height: 1.1875;
+   margin: 0;
+   padding: 0;
+}
+a
+{
+   color: #0000FF;
+   text-decoration: underline;
+}
+a:visited
+{
+   color: #800080;
+}
+a:active
+{
+   color: #FF0000;
+}
+a:hover
+{
+   color: #0000FF;
+   text-decoration: underline;
+}
+input:focus, textarea:focus, select:focus
+{
+   outline: none;
+}
+#wb_Text1 
+{
+   background-color: transparent;
+   background-image: none;
+   border: 0px solid #000000;
+   padding: 0;
+   margin: 0;
+}
+#wb_Text1 div
+{
+   text-align: left;
+}
+#Button1
+{
+   border: 3px solid #000000;
+   border-radius: 6px;
+   background-color: #70AD47;
+   background-image: none;
+   color: #000000;
+   font-family: "Copperplate Gothic Bold";
+   font-weight: normal;
+   font-style: normal;
+   font-size: 19px;
+   padding: 1px 6px 1px 6px;
+   text-align: center;
+   -webkit-appearance: none;
+   margin: 0;
+}
+h1, .h1
+{
+   font-family: Arial;
+   font-weight: bold;
+   font-size: 32px;
+   text-decoration: none;
+   color: #000000;
+   background-color: transparent;
+   margin: 0px 0px 0px 0px;
+   padding: 0px 0px 0px 0px;
+   display: inline;
+}
+h2, .h2
+{
+   font-family: Arial;
+   font-weight: bold;
+   font-size: 27px;
+   text-decoration: none;
+   color: #000000;
+   background-color: transparent;
+   margin: 0px 0px 0px 0px;
+   padding: 0px 0px 0px 0px;
+   display: inline;
+}
+h3, .h3
+{
+   font-family: Arial;
+   font-weight: bold;
+   font-size: 24px;
+   text-decoration: none;
+   color: #000000;
+   background-color: transparent;
+   margin: 0px 0px 0px 0px;
+   padding: 0px 0px 0px 0px;
+   display: inline;
+}
+h4, .h4
+{
+   font-family: Arial;
+   font-weight: bold;
+   font-size: 21px;
+   font-style: italic;
+   text-decoration: none;
+   color: #000000;
+   background-color: transparent;
+   margin: 0px 0px 0px 0px;
+   padding: 0px 0px 0px 0px;
+   display: inline;
+}
+h5, .h5
+{
+   font-family: Arial;
+   font-weight: bold;
+   font-size: 19px;
+   text-decoration: none;
+   color: #000000;
+   background-color: transparent;
+   margin: 0px 0px 0px 0px;
+   padding: 0px 0px 0px 0px;
+   display: inline;
+}
+h6, .h6
+{
+   font-family: Arial;
+   font-weight: bold;
+   font-size: 16px;
+   text-decoration: none;
+   color: #000000;
+   background-color: transparent;
+   margin: 0px 0px 0px 0px;
+   padding: 0px 0px 0px 0px;
+   display: inline;
+}
+.CustomStyle
+{
+   font-family: "Courier New";
+   font-weight: bold;
+   font-size: 16px;
+   text-decoration: none;
+   color: #2E74B5;
+   background-color: transparent;
+}
+
+        table { page-break-inside:auto }
+        div   { page-break-inside:avoid; } /* This is the key */
+        thead { display:table-header-group }
+        tfoot { display:table-footer-group }
+    </style>
+</head>
+<body>
+   <center>
+      <div id="wb_Text1" style="left:581px;top:25px;width:322px;height:60px;z-index:1;">
+         <span style="color:#FFFFFF;font-family:Impact;font-size:48px;"><u>User data</u></span></div>
+   </center>
+   <br><br><br><br>
+    <form action="/admin/pharmacists" method="POST" style="text-align: center;">
+        <input list="browsers" name="email" id="browser" autocomplete="off" placeholder="search by email">
+            <datalist id="browsers">
+                {% for i in all_pharmacists %}
+                    <option value ="{{i.email}}">
+                {% endfor %}
+              </datalist> 
+        <input type="submit" id="Button1" name="search" value="Search">
+    </form>
+    <center><h3 style="color: white;">OR</h3></center>
+    <form action="/symptom_search" method="POST" style="text-align: center;">
+         <input type="text" name="symptom" placeholder="search by symptom">
+         <input type="submit" id="Button1" name="search_sympt" value="Search">
+   </form>
+
+    <br><br>
+    
+    <form action="/admin/pharmacists/view" method="POST" style="text-align: center;">
+        
+        <TABLE id="dataTable" border="2" align="center" style="background-color: darkseagreen;">
+            <th style="text-align: center;">Pharmacist id</th>
+            <th style="text-align: center;">Number of Pharmacist</th>
+            <th style="text-align: center;">email</th>
+            <th style="text-align: center;">phone no.</th>
+            <th style="text-align: center;">address</th>
+            <th style="text-align: center;">Action</th>
+                {% for i in all_pharmacists %}
+                <tr style="text-align: center; background-color: cyan;">
+                    <td>{{i.id}}</td>
+                    <td>{{i.name}}</td>
+                    <td>{{i.email}}</td>
+                    <td>{{i.phone_number}}</td>
+                    <td>{{i.address}}</td>
+                    <td><input type="submit" id="Button1" name="{{i.id}}" value="View"></td>
+                </tr>
+                {% endfor %}    
+          </TABLE>
+        </form>
+    <br><br>
+    
+</body>
+</html>
+{% endblock %}

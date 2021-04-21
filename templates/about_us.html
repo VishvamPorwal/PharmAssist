@@ -1,0 +1,296 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<style>
+body
+{
+   background-color: #FFFFFF;
+   background-image: url("{{url_for('static',filename='assets/images/j4t0DI.jpg')}}");
+   background-attachment: scroll;
+   background-position: left top;
+   background-repeat: repeat;
+   color: #000000;
+   font-family: Arial;
+   font-weight: normal;
+   font-size: 13px;
+   line-height: 1.1875;
+   margin: 0;
+   padding: 0;
+}
+a
+{
+   color: #0000FF;
+   text-decoration: underline;
+}
+a:visited
+{
+   color: #800080;
+}
+a:active
+{
+   color: #FF0000;
+}
+a:hover
+{
+   color: #0000FF;
+   text-decoration: underline;
+}
+input:focus, textarea:focus, select:focus
+{
+   outline: none;
+}
+#wb_Shape3
+{
+   transform: rotate(0deg);
+   transform-origin: 50% 50%;
+}
+#Shape3
+{
+   border-width: 0;
+   vertical-align: top;
+}
+#wb_Shape1
+{
+   transform: rotate(0deg);
+   transform-origin: 50% 50%;
+}
+#Shape1
+{
+   border-width: 0;
+   vertical-align: top;
+}
+#wb_Image1
+{
+   vertical-align: top;
+}
+#Image1
+{
+   border: 0px solid #000000;
+   padding: 0;
+   margin: 0;
+   left: 0;
+   top: 0;
+   width: 100%;
+   height: 100%;
+}
+#wb_Text1 
+{
+   background-color: transparent;
+   background-image: none;
+   border: 0px solid #000000;
+   padding: 0;
+   margin: 0;
+   text-align: center;
+}
+#wb_Text1 div
+{
+   text-align: center;
+}
+#wb_Image2
+{
+   vertical-align: top;
+}
+#Image2
+{
+   border: 0px solid #000000;
+   padding: 0;
+   margin: 0;
+   left: 0;
+   top: 0;
+   width: 100%;
+   height: 100%;
+}
+#wb_Text2 
+{
+   background-color: transparent;
+   background-image: none;
+   border: 0px solid #000000;
+   padding: 0;
+   margin: 0;
+   text-align: left;
+}
+#wb_Text2 div
+{
+   text-align: left;
+}
+#wb_Text3 
+{
+   background-color: transparent;
+   background-image: none;
+   border: 0px solid #000000;
+   padding: 0;
+   margin: 0;
+   text-align: left;
+}
+#wb_Text3 div
+{
+   text-align: left;
+}
+#wb_Image3
+{
+   vertical-align: top;
+}
+#Image3
+{
+   border: 3px groove #000000;
+   border-radius: 3px;
+   padding: 0;
+   margin: 0;
+   left: 0;
+   top: 0;
+   width: 100%;
+   height: 100%;
+}
+#wb_Text4 
+{
+   background-color: transparent;
+   background-image: none;
+   border: 0px solid #000000;
+   padding: 0;
+   margin: 0;
+   text-align: left;
+}
+#wb_Text4 div
+{
+   text-align: left;
+}
+#wb_Text5 
+{
+   background-color: transparent;
+   background-image: none;
+   border: 0px solid #000000;
+   padding: 0;
+   margin: 0;
+   text-align: left;
+}
+#wb_Text5 div
+{
+   text-align: left;
+}
+#wb_Text6 
+{
+   background-color: transparent;
+   background-image: none;
+   border: 0px solid #000000;
+   padding: 0;
+   margin: 0;
+   text-align: left;
+}
+#wb_Text6 div
+{
+   text-align: left;
+}
+h1, .h1
+{
+   font-family: Arial;
+   font-weight: bold;
+   font-size: 32px;
+   text-decoration: none;
+   color: #000000;
+   background-color: transparent;
+   margin: 0px 0px 0px 0px;
+   padding: 0px 0px 0px 0px;
+   display: inline;
+}
+h2, .h2
+{
+   font-family: Arial;
+   font-weight: bold;
+   font-size: 27px;
+   text-decoration: none;
+   color: #000000;
+   background-color: transparent;
+   margin: 0px 0px 0px 0px;
+   padding: 0px 0px 0px 0px;
+   display: inline;
+}
+h3, .h3
+{
+   font-family: Arial;
+   font-weight: bold;
+   font-size: 24px;
+   text-decoration: none;
+   color: #000000;
+   background-color: transparent;
+   margin: 0px 0px 0px 0px;
+   padding: 0px 0px 0px 0px;
+   display: inline;
+}
+h4, .h4
+{
+   font-family: Arial;
+   font-weight: bold;
+   font-size: 21px;
+   font-style: italic;
+   text-decoration: none;
+   color: #000000;
+   background-color: transparent;
+   margin: 0px 0px 0px 0px;
+   padding: 0px 0px 0px 0px;
+   display: inline;
+}
+h5, .h5
+{
+   font-family: Arial;
+   font-weight: bold;
+   font-size: 19px;
+   text-decoration: none;
+   color: #000000;
+   background-color: transparent;
+   margin: 0px 0px 0px 0px;
+   padding: 0px 0px 0px 0px;
+   display: inline;
+}
+h6, .h6
+{
+   font-family: Arial;
+   font-weight: bold;
+   font-size: 16px;
+   text-decoration: none;
+   color: #000000;
+   background-color: transparent;
+   margin: 0px 0px 0px 0px;
+   padding: 0px 0px 0px 0px;
+   display: inline;
+}
+.CustomStyle
+{
+   font-family: "Courier New";
+   font-weight: bold;
+   font-size: 16px;
+   text-decoration: none;
+   color: #2E74B5;
+   background-color: transparent;
+}
+
+</style>
+<head>
+<meta charset="utf-8">
+<title>About us</title>
+
+</head>
+<body>
+<div id="wb_Shape3" style="position:absolute;left:45px;top:799px;width:1248px;height:509px;z-index:0;">
+<img src="{{url_for('static',filename='assets/images/img0001.png')}}" id="Shape3" alt="" style="width:1248px;height:509px;"></div>
+<div id="wb_Shape1" style="position:absolute;left:45px;top:109px;width:730px;height:518px;z-index:1;">
+<img src="{{url_for('static',filename='assets/images/img0002.png')}}" id="Shape1" alt="" style="width:730px;height:518px;"></div>
+<div id="wb_Image1" style="position:absolute;left:76px;top:155px;width:404px;height:227px;z-index:2;">
+<img src="{{url_for('static',filename='assets/images/health-topics-2.jpg')}}" id="Image1" alt=""></div>
+<div id="wb_Text1" style="position:absolute;left:872px;top:109px;width:345px;height:111px;text-align:center;z-index:4;">
+<span style="color:#FFFFFF;font-family:'Comic Sans MS';font-size:43px;"><strong><u>About Us<br></u></strong></span></div>
+<div id="wb_Image2" style="position:absolute;left:310px;top:280px;width:439px;height:306px;z-index:5;">
+<img src="{{url_for('static',filename='assets/images/8461f936ed164d904614be745f6f3538_pills-1.png')}}" id="Image2" alt=""></div>
+<div id="wb_Text2" style="position:absolute;left:795px;top:192px;width:498px;height:214px;z-index:6;">
+<span style="color:#FFFFFF;font-family:Impact;font-size:19px;line-height:26px;"><br></span><span style="color:#FFFFFF;font-family:'Arial Black';font-size:17px;line-height:26px;">An online platform to manage pharmaceutical needs for user as well as supplier.&nbsp; It is a computer based system which helps the Pharmacist to improve inventory management, cost, medical safety etc. It&nbsp; highly minimizes time and resource by which, searching the medicine data you can get the data in quickest time.<br></span></div>
+<div id="wb_Text3" style="position:absolute;left:450px;top:716px;width:469px;height:45px;z-index:7;">
+<span style="color:#FFFFFF;font-family:'Comic Sans MS';font-size:32px;"><strong><u>Developed and Designed By:-</u></strong></span></div>
+<div id="wb_Image3" style="position:absolute;left:509px;top:821px;width:297px;height:349px;z-index:8;">
+<img src="{{url_for('static',filename='assets/images/WhatsApp Image 2021-04-02 at 2.49.39 PM.jpeg')}}" id="Image3" alt=""></div>
+<div id="wb_Text4" style="position:absolute;left:237px;top:924px;width:243px;height:40px;z-index:9;">
+<span style="color:#000000;font-family:'Comic Sans MS';font-size:29px;"><strong><u>Vishvam Porwal</u></strong></span></div>
+<div id="wb_Text5" style="position:absolute;left:863px;top:924px;width:243px;height:40px;z-index:10;">
+<span style="color:#000000;font-family:'Comic Sans MS';font-size:29px;"><strong><u>Yash Hingwe</u></strong></span></div>
+<div id="wb_Text6" style="position:absolute;left:548px;top:1195px;width:243px;height:40px;z-index:11;">
+<span style="color:#000000;font-family:'Comic Sans MS';font-size:29px;"><strong><u>Shubham Gupta</u></strong></span></div>
+</body>
+{% endblock %}

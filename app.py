@@ -7,10 +7,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
 
-
+import random
 
 # from admin.admin import admin
-# from admin_credentials import admin_email, admin_password
+from admin_credentials import admin_email, admin_password
 
 
 app = Flask(__name__)
@@ -30,12 +30,12 @@ db = SQLAlchemy(app)
 
 
 #flask mail config
-app.config["MAIL_DEFAULT_SENDER"] = ""
-app.config["MAIL_PASSWORD"] = ""
+app.config["MAIL_DEFAULT_SENDER"] = "pharmassist21@gmail.com"
+app.config["MAIL_PASSWORD"] = "Tirpaal@2021"
 app.config["MAIL_PORT"] = 587
 app.config["MAIL_SERVER"] = "smtp.gmail.com"
 app.config["MAIL_USE_TLS"] = True
-app.config["MAIL_USERNAME"] = ""
+app.config["MAIL_USERNAME"] = "pharmassist21"
 mail = Mail(app)
 
 
@@ -260,6 +260,10 @@ def total_sales_bw_b_e(begin = "2021-03-01", end = "2021-03-31"):
 	return db.session.query(db.func.sum(Sales.sale_price)).filter(Sales.selling_date > begin, Sales.selling_date < end, Sales.salesman_id == session['id']).scalar()
 
 
+def total_sales_bw_b_e_admin(begin = "2021-04-01", end = "2021-04-31"):
+	return db.session.query(db.func.sum(Sales.sale_price)).filter(Sales.selling_date >= begin, Sales.selling_date <= end).scalar()
+
+
 
 def calc_profit(y):
 	profit_yearly = list()
@@ -326,6 +330,18 @@ def make_dict_sale_recs():
 	return sales_with_customer
 
 
+#admin functions
+
+##get all pharmacist
+def get_all_pharmacist():
+	return Pharmacists.query.filter_by().all()
+
+##search for Pharmacist
+def search_pharmacist(email):
+	return Pharmacists.query.filter_by(email = email).first()
+
+
+
 #routes
 
 ##index
@@ -361,6 +377,12 @@ def signup():
 		if not (add_pharmacist(name, email, pwd, address, phone_number)):
 			flash("Email already taken")
 			return redirect(url_for("signup"))
+		try:
+			message = Message("You are registered in PharmaAssist!", sender = 'pharmassist21@gmail.com', recipients = [email])
+			message.body = f"Hello,{name}. We from PharmaAssist welcome you. : )"
+			mail.send(message)
+		except:
+			flash("Unable to send email")
 		flash("Signup successful!")
 		return redirect(url_for("login"))
 	else:
@@ -374,9 +396,10 @@ def login():
 	if request.method == "POST":
 		email = request.form.get("email")
 		psw = request.form.get("psw")
-		# if email == admin_email:
-		# 	if psw == admin_password:
-		# 		return redirect(url_for("admin.records"))
+		if email == admin_email:
+			if psw == admin_password:
+				session['admin_in'] = True
+				return redirect(url_for("admin_index"))
 		try:
 			pharmacist = Pharmacists.query.filter_by(email = email).first()
 
@@ -543,6 +566,7 @@ def edit():
 
 #are you sure to delete
 @app.route("/are_you_sure", methods = ['POST'])
+@login_required
 def are_you_sure():
 	inventory_list = Inventory.query.filter_by(owner_id = session['id']).all()
 	in_id = list(request.form.to_dict().keys())
@@ -674,6 +698,68 @@ def records():
 		return render_template("records.html", sales_recs = sales_recs, phone_number = phone_number, date = date)
 
 
+@app.route("/forgotpwd", methods = ["POST", "GET"])
+def forgotpwd():
+    if request.method == "GET":
+        return render_template("forgot_password.html")
+    else:
+        email = request.form.get("email")
+        session["pwd_chng_email"] = email
+        usr_found = Pharmacists.query.filter_by(email = email).first()
+        if usr_found is not None:
+            flash("otp sent to your email")
+            generated_otp = random.randint(1000, 9999)
+            session["generated_otp"] = generated_otp
+            message = Message("Here is your Otp", sender = 'pharmassist21@gmail.com', recipients = [email])
+            message.body = f"Your otp is {generated_otp}"
+            mail.send(message)
+            return redirect(url_for("otp"))
+        else:
+            flash("Email not found")
+            return redirect(url_for("forgotpwd"))
+
+
+@app.route("/otp", methods = ["POST", "GET"])
+def otp():
+    if request.method == "POST":
+        get_otp = request.form.get("otp")
+        get_otp = int(get_otp)
+        if session["generated_otp"] == get_otp :
+            return redirect(url_for("changepwd"))
+        else:
+            flash("wrong otp")
+            return redirect(url_for("otp"))
+    else:
+        if 'pwd_chng_email' not in session:
+            flash("not that easy :)")
+            return redirect(url_for("forgotpwd"))
+        return render_template("otp.html")
+
+
+@app.route("/changepwd", methods = ["POST", "GET"])
+def changepwd():
+    if request.method == "POST":
+        usr_found = Pharmacists.query.filter_by(email = session["pwd_chng_email"]).first()
+        new_pwd = request.form.get("newpwd")
+        new_pwd = generate_password_hash(new_pwd, method='sha256')
+        usr_found.pwd = new_pwd
+        db.session.commit()
+        session.pop("pwd_chng_email", None)
+        session.pop("generated_otp", None)
+        flash("password updated, please login again")
+        return redirect(url_for("login"))
+    else:
+        if 'pwd_chng_email' not in session:
+            flash("seriously who do you think i am kid, bazinga!!")
+            return redirect(url_for("forgotpwd"))
+        return render_template("changepwd.html")
+
+
+@app.route('/about_us')
+@login_required
+def about_us():
+	return render_template("about_us.html")
+
 
 ##logout
 @app.route('/logout')
@@ -683,6 +769,88 @@ def logout():
 	session.pop("email", None)
 	session.pop("id", None)
 	return redirect(url_for('signup'))
+
+
+@app.route('/admin/')
+def admin_index():
+	if 'admin_in' in session:
+		return render_template("admin/home.html")
+	else:
+		flash("You are not admin")
+		return redirect(url_for('home'))
+
+
+@app.route('/admin/pharmacists', methods = ['GET', 'POST'])
+def admin_pharmacists():
+	if 'admin_in' in session:
+		if request.method == 'GET':
+			all_pharmacists = get_all_pharmacist()
+			return render_template("admin/pharmacists.html", all_pharmacists = all_pharmacists)
+		else:
+			email = request.form.get("email")
+			pharmacist = search_pharmacist(email)
+			session['id'] = pharmacist.id
+			return render_template("admin/display_query.html", pharmacist = pharmacist)
+	else:
+		flash("You are not admin")
+		return redirect(url_for('home'))
+
+
+@app.route("/admin/pharmacists/view", methods = ['POST'])
+def admin_pharmacists_view():
+	if 'admin_in' in session:
+		pharmacists = get_all_pharmacist()
+		ph_id = list(request.form.to_dict().keys())
+		ph_id = ph_id[0]
+		ph_id = int(ph_id)
+		for pharmacist in pharmacists:
+			if pharmacist.id == ph_id:
+				session['id'] = ph_id
+				return render_template("admin/display_query.html", pharmacist = pharmacist)
+		return redirect(url_for('admin_pharmacists'))
+	else:
+		flash("You are not admin")
+		return redirect(url_for('home'))
+
+
+@app.route("/admin/pharmacist/dashboard", methods = ['GET', 'POST'])
+def admin_pharmacist_dashboard():
+	if 'admin_in' in session:
+		option_years = []
+		total_bought = get_b()
+		total_sold = get_s()
+		year = datetime.datetime.now().year
+		for tmp in range(2021, year+1):
+			option_years.append(tmp)
+		if request.method == "POST":
+			year = request.form.get("year")
+			year = int(year)
+			prof_p_m = calc_profit(year)
+			sales_p_m = calc_sales(year)
+			# print(sales_p_m)
+			return render_template("admin/dashboard.html", year = year, prof_p_m = prof_p_m, sales_p_m = sales_p_m, total_sold = total_sold, total_bought = total_bought, option_years = option_years)
+			
+		
+		prof_p_m = calc_profit(year)
+		sales_p_m = calc_sales(year)
+
+		# sales_p_m = [3,4,5,6,7,8,9,5,3,1,5,3]
+		print(sales_p_m)
+		return render_template("admin/dashboard.html", year = year, prof_p_m = prof_p_m, sales_p_m = sales_p_m, total_sold = total_sold, total_bought = total_bought, option_years = option_years)
+	else:
+		flash("You are not admin")
+		return redirect(url_for('home'))
+
+
+@app.route('/admin/logout')
+def admin_logout():
+	if 'admin_in' in session:
+		session.pop("id", None)
+		session.pop("admin_in", None)
+		return redirect(url_for('login'))
+	else:
+		flash("You are not admin")
+		return redirect(url_for('home'))
 
 
 #driver code
