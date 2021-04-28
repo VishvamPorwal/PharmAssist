@@ -178,9 +178,14 @@ h6, .h6
         <input type="submit" id="Button1" name="search" value="Search">
     </form>
     <center><h3 style="color: white;">OR</h3></center>
-    <form action="/symptom_search" method="POST" style="text-align: center;">
-         <input type="text" name="symptom" placeholder="search by symptom">
-         <input type="submit" id="Button1" name="search_sympt" value="Search">
+    <form action="/admin/pharmacist/by_number" method="POST" style="text-align: center;">
+         <input type="text" name="phone_number" placeholder="search by number">
+         <input type="submit" id="Button1" name="search" value="Search">
+   </form>
+   <center><h3 style="color: white;">OR</h3></center>
+    <form action="/admin/pharmacist/by_address" method="POST" style="text-align: center;">
+         <input type="text" name="address" placeholder="search by address">
+         <input type="submit" id="Button1" name="search" value="Search">
    </form>
 
     <br><br>

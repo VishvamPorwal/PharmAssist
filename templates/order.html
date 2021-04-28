@@ -1,0 +1,115 @@
+{% extends "layout.html" %}
+{% block body %}
+<!doctype html>
+<html>
+<head>
+<style>
+body
+{
+   background-color: #FFFFFF;
+   background-image: url("{{url_for('static',filename='assets/images/j4t0DI.jpg')}}");
+   background-attachment: scroll;
+   background-position: left top;
+   background-repeat: repeat;
+   color: #000000;
+   font-family: Arial;
+   font-weight: normal;
+   font-size: 13px;
+   line-height: 1.1875;
+   margin: 0;
+   padding: 0;
+}
+a
+{
+   color: #0000FF;
+   text-decoration: underline;
+}
+a:visited
+{
+   color: #800080;
+}
+a:active
+{
+   color: #FF0000;
+}
+a:hover
+{
+   color: #0000FF;
+   text-decoration: underline;
+}
+input:focus, textarea:focus, select:focus
+{
+   outline: none;
+}
+
+
+
+h1, .h1
+{
+   font-family: Arial;
+   font-weight: bold;
+   font-size: 32px;
+   text-decoration: none;
+   color: white;
+   background-color: transparent;
+   margin: 0px 0px 0px 0px;
+   padding: 0px 0px 0px 0px;
+   display: inline;
+}
+h2, .h2
+{
+   font-family: Arial;
+   font-weight: bold;
+   font-size: 27px;
+   text-decoration: none;
+   color: #000000;
+   background-color: transparent;
+   margin: 0px 0px 0px 0px;
+   padding: 0px 0px 0px 0px;
+   display: inline;
+}
+h3, .h3
+{
+   font-family: Arial;
+   font-weight: bold;
+   font-size: 24px;
+   text-decoration: none;
+   color: white;
+   background-color: transparent;
+   margin: 0px 0px 0px 0px;
+   padding: 0px 0px 0px 0px;
+   display: inline;
+}
+
+.CustomStyle
+{
+   font-family: "Courier New";
+   font-weight: bold;
+   font-size: 16px;
+   text-decoration: none;
+   color: #2E74B5;
+   background-color: transparent;
+}
+
+</style>
+<meta charset="utf-8">
+<title>Untitled Page</title>
+<link href="ss.css" rel="stylesheet">
+<link href="index.css" rel="stylesheet">
+</head>
+<body>
+    <center><h1>Place Order</h1></center>
+    <br><br>
+    <center>
+      <form action="/order" method="POST">
+    <h3>Enter name of medicine : </h3><input type="text" name="med_name">
+    <br><br>
+    <h3>Enter number of meds   :</h3> <input type="number" name="quantity">
+    <br><br>
+    <input type="submit" name="" id="">
+</form>
+    </center>
+
+</body>
+</html>
+{% endblock %}

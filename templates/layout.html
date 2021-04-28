@@ -33,6 +33,7 @@ $(document).ready(function()
 <li><a role="menuitem" href="/dashboard"><i class="fa fa-pie-chart fa-2x">&nbsp;</i><br>Dashboard</a></li>
 <li><a role="menuitem" href="/records"><i class="fa fa-history fa-2x">&nbsp;</i><br>records</a></li>
 <li><a role="menuitem" href="/billing"><i class="fa fa-calculator fa-2x">&nbsp;</i><br>Billing</a></li>
+<li><a role="menuitem" href="/order"><i class="fa fa-cart-plus fa-2x">&nbsp;</i><br>Order</a></li>
 </ul>
 </div>
 <div id="wb_PanelMenu1" style="position:absolute;left:0px;top:0px;width:94px;height:71px;text-align:center;z-index:2;">
@@ -51,9 +52,12 @@ $(document).ready(function()
 {% with messages = get_flashed_messages() %}
 {% if messages %}
 {% for msg in messages %}
-<div style = "padding: 20px;background-color: yellow;color: white;">
-    {{msg}}
+<center>
+  <div style = "padding: 20px;background-color: royalblue;color: white;">
+    <b>{{msg}}</b>
 </div>
+</center>
+
 {% endfor %}
 {% endif %}
 {% endwith %}

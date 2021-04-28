@@ -5,7 +5,7 @@ from flask_mail import Mail, Message
 import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-
+from functools import wraps
 
 import random
 
@@ -340,6 +340,11 @@ def get_all_pharmacist():
 def search_pharmacist(email):
 	return Pharmacists.query.filter_by(email = email).first()
 
+##search by address
+def address_like(address):
+	search = "%{}%".format(address)
+	pharmacists = Pharmacists.query.filter(Pharmacists.address.like(search)).all()
+	return pharmacists
 
 
 #routes
@@ -761,6 +766,22 @@ def about_us():
 	return render_template("about_us.html")
 
 
+@app.route('/order', methods = ['GET', 'POST'])
+@login_required
+def order():
+	if request.method == 'POST':
+		med_name = request.form.get('med_name')
+		quantity = request.form.get('quantity')
+		pharmacist = Pharmacists.query.filter_by(id = session['id']).first()
+		message = Message(f"Order from {pharmacist.name}", sender = 'pharmassist21@gmail.com', recipients = [pharmacist.email, admin_email])
+		message.body = f"Pharmacist Details: \nName:{pharmacist.name}\nEmail:{pharmacist.email}\naddress:{pharmacist.address}\nPhone number:{pharmacist.phone_number}\nOrder Details:\nmedicine name:{med_name}\nquantity:{quantity}"
+		mail.send(message)
+		flash('order placed')
+		return redirect(url_for('order'))
+	else:
+		return render_template('order.html')
+
+
 ##logout
 @app.route('/logout')
 @login_required
@@ -771,86 +792,116 @@ def logout():
 	return redirect(url_for('signup'))
 
 
+############################ Admin ####################################
+
+
+#custom decorators
+def admin_login_required(f):
+	@wraps(f)
+	def decorator_function(*args, **kwargs):
+		if 'admin_in' not in session:
+			return redirect(url_for('login', next = request.url))
+		return f(*args, **kwargs)
+	return decorator_function
+
+
+# admin routes
+## 
+
+
 @app.route('/admin/')
+@admin_login_required
 def admin_index():
-	if 'admin_in' in session:
-		return render_template("admin/home.html")
-	else:
-		flash("You are not admin")
-		return redirect(url_for('home'))
+	return render_template("admin/home.html")
 
 
 @app.route('/admin/pharmacists', methods = ['GET', 'POST'])
+@admin_login_required
 def admin_pharmacists():
-	if 'admin_in' in session:
-		if request.method == 'GET':
-			all_pharmacists = get_all_pharmacist()
-			return render_template("admin/pharmacists.html", all_pharmacists = all_pharmacists)
-		else:
-			email = request.form.get("email")
-			pharmacist = search_pharmacist(email)
-			session['id'] = pharmacist.id
-			return render_template("admin/display_query.html", pharmacist = pharmacist)
+	if request.method == 'GET':
+		all_pharmacists = get_all_pharmacist()
+		return render_template("admin/pharmacists.html", all_pharmacists = all_pharmacists)
 	else:
-		flash("You are not admin")
-		return redirect(url_for('home'))
+		email = request.form.get("email")
+		pharmacist = search_pharmacist(email)
+		session['id'] = pharmacist.id
+		return render_template("admin/display_query.html", pharmacist = pharmacist)
+
+
+@app.route('/admin/pharmacist/by_number', methods = ['POST'])
+@admin_login_required
+def admin_pharmacist_by_number():
+	phone_number = request.form.get('phone_number')
+	try:
+		pharmacist = Pharmacists.query.filter_by(phone_number = phone_number).first()
+		session['id'] = pharmacist.id
+	except:
+		flash('Not found')
+		return redirect(url_for('admin_pharmacists'))
+	return render_template('admin/display_query.html', pharmacist = pharmacist)
+
+
+@app.route('/admin/pharmacist/by_address', methods = ['POST'])
+@admin_login_required
+def admin_pharmacist_by_address():
+	address = request.form.get('address')
+	try:
+		pharmacists = address_like(address)
+		return render_template('admin/display_query2.html', pharmacists = pharmacists)
+	except:
+		flash('No results found')
+		return redirect(url_for('admin_pharmacists'))
 
 
 @app.route("/admin/pharmacists/view", methods = ['POST'])
+@admin_login_required
 def admin_pharmacists_view():
-	if 'admin_in' in session:
-		pharmacists = get_all_pharmacist()
-		ph_id = list(request.form.to_dict().keys())
-		ph_id = ph_id[0]
-		ph_id = int(ph_id)
-		for pharmacist in pharmacists:
-			if pharmacist.id == ph_id:
-				session['id'] = ph_id
-				return render_template("admin/display_query.html", pharmacist = pharmacist)
-		return redirect(url_for('admin_pharmacists'))
-	else:
-		flash("You are not admin")
-		return redirect(url_for('home'))
+	pharmacists = get_all_pharmacist()
+	ph_id = list(request.form.to_dict().keys())
+	ph_id = ph_id[0]
+	ph_id = int(ph_id)
+	for pharmacist in pharmacists:
+		if pharmacist.id == ph_id:
+			session['id'] = ph_id
+			return render_template("admin/display_query.html", pharmacist = pharmacist)
+	return redirect(url_for('admin_pharmacists'))
+
 
 
 @app.route("/admin/pharmacist/dashboard", methods = ['GET', 'POST'])
+@admin_login_required
 def admin_pharmacist_dashboard():
-	if 'admin_in' in session:
-		option_years = []
-		total_bought = get_b()
-		total_sold = get_s()
-		year = datetime.datetime.now().year
-		for tmp in range(2021, year+1):
-			option_years.append(tmp)
-		if request.method == "POST":
-			year = request.form.get("year")
-			year = int(year)
-			prof_p_m = calc_profit(year)
-			sales_p_m = calc_sales(year)
-			# print(sales_p_m)
-			return render_template("admin/dashboard.html", year = year, prof_p_m = prof_p_m, sales_p_m = sales_p_m, total_sold = total_sold, total_bought = total_bought, option_years = option_years)
-			
-		
+	option_years = []
+	total_bought = get_b()
+	total_sold = get_s()
+	year = datetime.datetime.now().year
+	for tmp in range(2021, year+1):
+		option_years.append(tmp)
+	if request.method == "POST":
+		year = request.form.get("year")
+		year = int(year)
 		prof_p_m = calc_profit(year)
 		sales_p_m = calc_sales(year)
-
-		# sales_p_m = [3,4,5,6,7,8,9,5,3,1,5,3]
-		print(sales_p_m)
+		# print(sales_p_m)
 		return render_template("admin/dashboard.html", year = year, prof_p_m = prof_p_m, sales_p_m = sales_p_m, total_sold = total_sold, total_bought = total_bought, option_years = option_years)
-	else:
-		flash("You are not admin")
-		return redirect(url_for('home'))
+		
+	
+	prof_p_m = calc_profit(year)
+	sales_p_m = calc_sales(year)
+
+	# sales_p_m = [3,4,5,6,7,8,9,5,3,1,5,3]
+	print(sales_p_m)
+	return render_template("admin/dashboard.html", year = year, prof_p_m = prof_p_m, sales_p_m = sales_p_m, total_sold = total_sold, total_bought = total_bought, option_years = option_years)
+
 
 
 @app.route('/admin/logout')
+@admin_login_required
 def admin_logout():
-	if 'admin_in' in session:
-		session.pop("id", None)
-		session.pop("admin_in", None)
-		return redirect(url_for('login'))
-	else:
-		flash("You are not admin")
-		return redirect(url_for('home'))
+	session.pop("id", None)
+	session.pop("admin_in", None)
+	return redirect(url_for('login'))
+	
 
 
 #driver code

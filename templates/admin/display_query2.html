@@ -1,0 +1,43 @@
+{% extends "admin/layout.html" %}
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<style>
+    body {
+      background-image: url("{{url_for('static',filename='assets/images/j4t0DI.jpg')}}");
+      color: black;
+    }
+    table, th, td {
+border: 2px solid black;
+}
+</style>
+<body>
+    <form action="/admin/pharmacists/view" method="POST" style="text-align: center;">
+      <TABLE id="dataTable" border="2" align="center" style="background-color: darkseagreen;">
+        <th style="text-align: center;">Pharmacist id</th>
+        <th style="text-align: center;">Name of Pharmacist</th>
+        <th style="text-align: center;">email</th>
+        <th style="text-align: center;">phone no.</th>
+        <th style="text-align: center;">address</th>
+        <th style="text-align: center;">Action</th>
+            {% for i in pharmacists %}
+                <tr style="text-align: center; background-color: cyan;">
+                    <td>{{i.id}}</td>
+                    <td>{{i.name}}</td>
+                    <td>{{i.email}}</td>
+                    <td>{{i.phone_number}}</td>
+                    <td>{{i.address}}</td>
+                    <td><input type="submit" id="Button1" name="{{i.id}}" value="View"></td>
+                </tr>  
+            {% endfor %} 
+      </TABLE>
+      <br>
+      
+</body>
+</html>
+{% endblock %}
