@@ -30,8 +30,8 @@ db = SQLAlchemy(app)
 
 
 #flask mail config
-app.config["MAIL_DEFAULT_SENDER"] = "pharmassist21@gmail.com"
-app.config["MAIL_PASSWORD"] = "Tirpaal@2021"
+app.config["MAIL_DEFAULT_SENDER"] = ""
+app.config["MAIL_PASSWORD"] = ""
 app.config["MAIL_PORT"] = 587
 app.config["MAIL_SERVER"] = "smtp.gmail.com"
 app.config["MAIL_USE_TLS"] = True
